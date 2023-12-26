@@ -6,6 +6,15 @@
 
 Turn your movie nights into an immersive cinematic experience with PlaySho! 🎬 Watch a single video with friends, regardless of where they are. Create a virtual cinema, share a stream link, and enjoy synchronized playback for an unforgettable movie-watching adventure.
 
+
+<p align="center">
+  <img src="screenshots/screenshot_one.png" alt="Screenshot 1" width="220">
+  <img src="screenshots/screenshot_two.png" alt="Screenshot 2" width="220">
+  <img src="screenshots/screenshot_three.png" alt="Screenshot 3" width="220">
+  <img src="screenshots/screenshot_four.png" alt="Screenshot 4" width="220">
+</p> 
+
+
 ## 🚀 Key Features:
 
 ### 🎥 Virtual Cinema:
