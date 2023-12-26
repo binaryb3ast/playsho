@@ -8,6 +8,7 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
+import com.playsho.android.base.ApplicationLoader;
 
 
 public class LocalController {
