@@ -1,18 +1,18 @@
 <p align="center">
-  <img src="app/src/main/res/drawable-nodpi/img_logo.png" alt="PlaySho Logo" width="375" height="256">
+  <img src="app/src/main/res/drawable-nodpi/img_logo.png" alt="PlaySho Logo" width="100" height="68">
 </p>
 
 # PlaySho: Virtual Cinema for Shared Movie Nights
 
-Transform your movie nights into a cinematic experience with PlaySho! Watch a single video together with friends, no matter where they are. Create a virtual cinema, generate a shared stream link, and enjoy synchronized playback for an immersive movie-watching experience.
+Turn your movie nights into an immersive cinematic experience with PlaySho! 🎬 Watch a single video with friends, regardless of where they are. Create a virtual cinema, share a stream link, and enjoy synchronized playback for an unforgettable movie-watching adventure.
 
-## Key Features:
+## 🚀 Key Features:
 
-### 🎞 Virtual Cinema:
+### 🎥 Virtual Cinema:
 
 Set up your private cinema room and enjoy a shared movie night with friends.
 
-### 📺 Single Video Playback:
+### 🍿 Single Video Playback:
 
 Watch a single video together in perfect synchronization for a cinema-like experience.
 
@@ -20,7 +20,7 @@ Watch a single video together in perfect synchronization for a cinema-like exper
 
 Generate a unique stream link and invite friends to join your virtual cinema.
 
-### 🎭 Real-Time Interaction:
+### 💬 Real-Time Interaction:
 
 Chat and share reactions with friends as you watch, creating a social movie-watching experience.
 
@@ -28,11 +28,11 @@ Chat and share reactions with friends as you watch, creating a social movie-watc
 
 Access PlaySho on various devices – mobile, tablet, or desktop – for a flexible and enjoyable cinema night.
 
-### 🟢 Stay Connected:
+### 🌐 Stay Connected:
 
 Bridge the gap between distances and enjoy shared movie moments with friends and loved ones.
 
-## How It Works:
+## 🛠️ How It Works:
 
 1. **Create Cinema Room:**
    - Set up your virtual cinema room and customize it for the perfect movie night ambiance.
@@ -46,7 +46,7 @@ Bridge the gap between distances and enjoy shared movie moments with friends and
 4. **Watch Together:**
    - Experience the magic of synchronized playback as you watch a single video together in real-time.
 
-## Why PlaySho:
+## 🌟 Why PlaySho:
 
 - **Virtual Movie Nights:**
   - Create a cinema atmosphere for shared movie nights.
@@ -57,4 +57,4 @@ Bridge the gap between distances and enjoy shared movie moments with friends and
 - **No Limits:**
   - Watch with friends anywhere, making distance disappear.
 
-Turn your virtual cinema dreams into reality with PlaySho. Download now and start hosting unforgettable shared movie nights!
+## 🎉 Turn your virtual cinema dreams into reality with PlaySho. Download now and start hosting unforgettable shared movie nights! 🍿✨
