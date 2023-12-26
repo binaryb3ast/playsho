@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Playsho</string>
+    <string name="app_slogan">Play and watch together</string>
+    <string name="button_create_room">Create a room</string>
+    <string name="button_add_friend">Add friends</string>
+    <string name="add_stream_link">Add stream link to play</string>
+    <string name="send_message_input_hint">Type a message or link</string>
+    <string name="add_video_url_title">Add video link</string>
+    <string name="add_video_url_input_hint">Paste or type video link</string>
+    <string name="add_video_url_description">You can add any video link from any website with stream support.</string>
+    <string name="add_video_url_btn">Add and Play!</string>
+    <string name="tutorial">1- Create a room without signup!\n2- Add video link\n3- Add friends\n4- Watch together and enjoy! :)</string>
 </resources>
