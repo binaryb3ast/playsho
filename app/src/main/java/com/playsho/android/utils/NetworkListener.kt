@@ -1,40 +1,34 @@
-package com.playsho.android.utils;
+package com.playsho.android.utils
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
-
-import androidx.annotation.NonNull;
-
-import com.playsho.android.base.ApplicationLoader;
-
-import java.util.concurrent.atomic.AtomicBoolean;
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import androidx.annotation.NonNull
+import com.playsho.android.base.ApplicationLoader
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * NetworkListener is a utility class that monitors network availability changes using
  * ConnectivityManager.NetworkCallback. It provides methods to initialize the listener,
  * check the current network availability, and get real-time updates on network status.
  */
-public class NetworkListener extends ConnectivityManager.NetworkCallback {
+class NetworkListener : ConnectivityManager.NetworkCallback() {
 
     // ConnectivityManager instance for network monitoring
-    private ConnectivityManager connectivityManager;
+    private val connectivityManager: ConnectivityManager = ApplicationLoader.getAppContext()
+        .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     // AtomicBoolean to ensure thread-safe access to network availability status
-    private final AtomicBoolean isNetworkAvailable = new AtomicBoolean(false);
+    private val isNetworkAvailable = AtomicBoolean(false)
 
     /**
      * Initializes the NetworkListener by registering it with the ConnectivityManager.
      * This method should be called to start monitoring network changes.
      */
-    public void init() {
-        // Obtain ConnectivityManager from the application context
-        connectivityManager = (ConnectivityManager) ApplicationLoader.getAppContext()
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-
+    fun init() {
         // Register the NetworkListener to receive network status callbacks
-        connectivityManager.registerDefaultNetworkCallback(this);
+        connectivityManager.registerDefaultNetworkCallback(this)
     }
 
     /**
@@ -42,32 +36,32 @@ public class NetworkListener extends ConnectivityManager.NetworkCallback {
      *
      * @return True if the network is available, false otherwise.
      */
-    public boolean checkNetworkAvailability() {
+    fun checkNetworkAvailability(): Boolean {
         // Obtain the currently active network
-        Network network = connectivityManager.getActiveNetwork();
+        val network: Network? = connectivityManager.activeNetwork
 
         if (network == null) {
             // No active network, set availability to false
-            isNetworkAvailable.set(false);
-            return isNetworkAvailable();
+            isNetworkAvailable.set(false)
+            return isNetworkAvailable()
         }
 
         // Obtain the network capabilities of the active network
-        NetworkCapabilities networkCapabilities = connectivityManager.getNetworkCapabilities(network);
+        val networkCapabilities: NetworkCapabilities? = connectivityManager.getNetworkCapabilities(network)
 
         if (networkCapabilities == null) {
             // Network capabilities not available, set availability to false
-            isNetworkAvailable.set(false);
-            return isNetworkAvailable();
+            isNetworkAvailable.set(false)
+            return isNetworkAvailable()
         }
 
         // Check if the network has any of the specified transport types (e.g., WiFi, Cellular)
         isNetworkAvailable.set(networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
                 || networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
                 || networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
-                || networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH));
+                || networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH))
 
-        return isNetworkAvailable();
+        return isNetworkAvailable()
     }
 
     /**
@@ -75,8 +69,8 @@ public class NetworkListener extends ConnectivityManager.NetworkCallback {
      *
      * @return True if the network is available, false otherwise.
      */
-    public boolean isNetworkAvailable() {
-        return isNetworkAvailable.get();
+    fun isNetworkAvailable(): Boolean {
+        return isNetworkAvailable.get()
     }
 
     /**
@@ -84,10 +78,9 @@ public class NetworkListener extends ConnectivityManager.NetworkCallback {
      *
      * @param network The Network object representing the available network.
      */
-    @Override
-    public void onAvailable(@NonNull Network network) {
+    override fun onAvailable(network: Network) {
         // Set network availability status to true
-        isNetworkAvailable.set(true);
+        isNetworkAvailable.set(true)
     }
 
     /**
@@ -95,9 +88,8 @@ public class NetworkListener extends ConnectivityManager.NetworkCallback {
      *
      * @param network The Network object representing the lost network.
      */
-    @Override
-    public void onLost(@NonNull Network network) {
+    override fun onLost(network: Network) {
         // Set network availability status to false
-        isNetworkAvailable.set(false);
+        isNetworkAvailable.set(false)
     }
 }
