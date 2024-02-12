@@ -18,6 +18,12 @@ android {
     }
 
 
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+
     buildFeatures {
         dataBinding = true
     }
@@ -29,6 +35,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+    }
+    packaging {
+        resources {
+            excludes +="META-INF/rxjava.properties"
         }
     }
     compileOptions {

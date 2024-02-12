@@ -64,7 +64,7 @@ object DimensionUtils {
      * @return The converted value in dp.
      */
     fun pxToDp(px: Int): Float {
-        val metrics = ApplicationLoader.getAppContext().resources.displayMetrics
+        val metrics = ApplicationLoader.context.resources.displayMetrics
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, px.toFloat(), metrics)
     }
 

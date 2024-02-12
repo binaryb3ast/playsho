@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:background="@color/black_background"
+        android:layout_height="match_parent">
+
+        <com.playsho.android.component.PhotoBoard
+            android:id="@+id/img_logo"
+            android:layout_width="80dp"
+            android:adjustViewBounds="true"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/img_logo" />
+
+        <TextView
+            android:layout_marginTop="24dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/img_logo"
+            style="@style/font_h5"
+            android:textColor="@color/white"
+            android:text="@string/slogan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+</layout>

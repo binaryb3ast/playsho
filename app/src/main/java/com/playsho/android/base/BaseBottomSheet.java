@@ -156,6 +156,5 @@ public abstract class BaseBottomSheet<B extends ViewDataBinding> extends BottomS
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
-        if (!Validator.isNull(this.bottomSheetStatusCallback)) this.bottomSheetStatusCallback.onBottomSheetDismiss();
     }
 }

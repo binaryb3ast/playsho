@@ -30,7 +30,7 @@ object DeviceUtils {
      * TelephonyManager instance for network-related information
      */
     private val telephonyManager: TelephonyManager? by lazy {
-        ApplicationLoader.getAppContext().getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager?
+        ApplicationLoader.context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager?
     }
 
     /**
@@ -39,8 +39,8 @@ object DeviceUtils {
      * @return The version name of the application.
      */
     fun getAppVersionName(): String {
-        val packageManager = ApplicationLoader.getAppContext().packageManager
-        val packageName = ApplicationLoader.getAppContext().packageName
+        val packageManager = ApplicationLoader.context.packageManager
+        val packageName = ApplicationLoader.context.packageName
         return try {
             val packageInfo = packageManager.getPackageInfo(packageName, 0)
             packageInfo.versionName
@@ -56,8 +56,8 @@ object DeviceUtils {
      * @return The first installation time of the application.
      */
     fun getFirstInstallTime(): Long {
-        val packageManager = ApplicationLoader.getAppContext().packageManager
-        val packageName = ApplicationLoader.getAppContext().packageName
+        val packageManager = ApplicationLoader.context.packageManager
+        val packageName = ApplicationLoader.context.packageName
         return try {
             val packageInfo = packageManager.getPackageInfo(packageName, 0)
             packageInfo.firstInstallTime
@@ -73,8 +73,8 @@ object DeviceUtils {
      * @return The last update time of the application.
      */
     fun getLastUpdateTime(): Long {
-        val packageManager = ApplicationLoader.getAppContext().packageManager
-        val packageName = ApplicationLoader.getAppContext().packageName
+        val packageManager = ApplicationLoader.context.packageManager
+        val packageName = ApplicationLoader.context.packageName
         return try {
             val packageInfo = packageManager.getPackageInfo(packageName, 0)
             packageInfo.lastUpdateTime
@@ -99,7 +99,7 @@ object DeviceUtils {
      * @return The percentage of free memory.
      */
     fun getFreeMemoryPercentage(): Int {
-        val activityManager = ApplicationLoader.getAppContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val activityManager = ApplicationLoader.context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         val memoryInfo = ActivityManager.MemoryInfo()
         activityManager.getMemoryInfo(memoryInfo)
         return ((memoryInfo.availMem.toDouble() / memoryInfo.totalMem) * 100.0).toInt()
@@ -114,12 +114,12 @@ object DeviceUtils {
     }
 
     fun getBatteryPercentage(): Int {
-        val batteryManager = ApplicationLoader.getAppContext().getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+        val batteryManager = ApplicationLoader.context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
         return batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
     }
 
     fun getNetworkClass(): String {
-        val cm = ApplicationLoader.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val cm = ApplicationLoader.context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val info = cm.activeNetworkInfo
         if (info == null || !info.isConnectedOrConnecting)
             return "NOT_CONNECTED" // not connected
@@ -156,7 +156,7 @@ object DeviceUtils {
 
     fun isAirplaneModeOn(): Boolean {
         return Settings.Global.getInt(
-            ApplicationLoader.getAppContext().contentResolver,
+            ApplicationLoader.context.contentResolver,
             Settings.Global.AIRPLANE_MODE_ON, 0
         ) != 0
     }
@@ -181,7 +181,7 @@ object DeviceUtils {
     @SuppressLint("HardwareIds")
     fun getDeviceUniqueId(): String {
         val androidId = Settings.Secure.getString(
-            ApplicationLoader.getAppContext().contentResolver,
+            ApplicationLoader.context.contentResolver,
             Settings.Secure.ANDROID_ID
         ) ?: UUID.randomUUID().toString()
         val fingerprint = Build.FINGERPRINT

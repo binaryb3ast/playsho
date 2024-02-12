@@ -16,11 +16,11 @@ import java.util.concurrent.atomic.AtomicBoolean
 class NetworkListener : ConnectivityManager.NetworkCallback() {
 
     // ConnectivityManager instance for network monitoring
-    private val connectivityManager: ConnectivityManager = ApplicationLoader.getAppContext()
+    private val connectivityManager: ConnectivityManager = ApplicationLoader.context
         .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     // AtomicBoolean to ensure thread-safe access to network availability status
-    private val isNetworkAvailable = AtomicBoolean(false)
+    val isNetworkAvailable = AtomicBoolean(false)
 
     /**
      * Initializes the NetworkListener by registering it with the ConnectivityManager.

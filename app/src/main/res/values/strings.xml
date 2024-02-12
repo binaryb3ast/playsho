@@ -10,4 +10,5 @@
     <string name="add_video_url_description">You can add any video link from any website with stream support.</string>
     <string name="add_video_url_btn">Add and Play!</string>
     <string name="tutorial">1- Create a room without signup!\n2- Add video link\n3- Add friends\n4- Watch together and enjoy! :)</string>
+    <string name="slogan">Play and watch togather</string>
 </resources>

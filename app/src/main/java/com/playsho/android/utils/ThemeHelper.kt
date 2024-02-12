@@ -21,7 +21,7 @@ object ThemeHelper {
         val gradientDrawable = GradientDrawable()
         gradientDrawable.shape = GradientDrawable.RECTANGLE
         gradientDrawable.cornerRadius = DimensionUtils.dpToPx(radius.toFloat()).toFloat()
-        gradientDrawable.setColor(ContextCompat.getColor(ApplicationLoader.getAppContext(), color))
+        gradientDrawable.setColor(ContextCompat.getColor(ApplicationLoader.context, color))
         return gradientDrawable
     }
 
@@ -38,7 +38,7 @@ object ThemeHelper {
         val gradientDrawable = createRect(color, radius)
         gradientDrawable.setStroke(
             DimensionUtils.dpToPx(strokeWidth.toFloat()).toInt(),
-            ContextCompat.getColor(ApplicationLoader.getAppContext(), strokeColor)
+            ContextCompat.getColor(ApplicationLoader.context, strokeColor)
         )
         return gradientDrawable
     }
@@ -52,7 +52,7 @@ object ThemeHelper {
     fun createCircle(@ColorRes color: Int): GradientDrawable {
         val gradientDrawable = GradientDrawable()
         gradientDrawable.shape = GradientDrawable.OVAL
-        gradientDrawable.setColor(ContextCompat.getColor(ApplicationLoader.getAppContext(), color))
+        gradientDrawable.setColor(ContextCompat.getColor(ApplicationLoader.context, color))
         return gradientDrawable
     }
 
@@ -68,7 +68,7 @@ object ThemeHelper {
         val gradientDrawable = createCircle(color)
         gradientDrawable.setStroke(
             DimensionUtils.dpToPx(strokeWidth.toFloat()).toInt(),
-            ContextCompat.getColor(ApplicationLoader.getAppContext(), strokeColor)
+            ContextCompat.getColor(ApplicationLoader.context, strokeColor)
         )
         return gradientDrawable
     }

@@ -20,7 +20,7 @@ object LocalController {
      * @return The localized string.
      */
     fun getString(resourceId: Int): String {
-        return ApplicationLoader.getAppContext().resources.getString(resourceId)
+        return ApplicationLoader.context.resources.getString(resourceId)
     }
 
     /**
@@ -31,7 +31,7 @@ object LocalController {
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     fun getFont(resourceId: Int): Typeface {
-        return ApplicationLoader.getAppContext().resources.getFont(resourceId)
+        return ApplicationLoader.context.resources.getFont(resourceId)
     }
 
     /**
@@ -42,7 +42,7 @@ object LocalController {
      */
     fun getFont(fontName: String): Typeface? {
         return try {
-            Typeface.createFromAsset(ApplicationLoader.getAppContext().assets, "fonts/$fontName.ttf")
+            Typeface.createFromAsset(ApplicationLoader.context.assets, "fonts/$fontName.ttf")
         } catch (e: Exception) {
             e.printStackTrace()
             null
@@ -56,7 +56,7 @@ object LocalController {
      * @return The color value.
      */
     fun getColor(resource: Int): Int {
-        return ContextCompat.getColor(ApplicationLoader.getAppContext(), resource)
+        return ContextCompat.getColor(ApplicationLoader.context, resource)
     }
 
     /**
@@ -66,7 +66,7 @@ object LocalController {
      * @return The dimension value.
      */
     fun getDimen(resource: Int): Float {
-        return ApplicationLoader.getAppContext().resources.getDimension(resource)
+        return ApplicationLoader.context.resources.getDimension(resource)
     }
 
     /**
@@ -76,7 +76,7 @@ object LocalController {
      * @return The dimension pixel size.
      */
     fun getDimensionPixelSize(resource: Int): Int {
-        return ApplicationLoader.getAppContext().resources.getDimensionPixelSize(resource)
+        return ApplicationLoader.context.resources.getDimensionPixelSize(resource)
     }
 
     /**
@@ -86,6 +86,6 @@ object LocalController {
      * @return The Drawable object.
      */
     fun getDrawable(resource: Int): Drawable? {
-        return ContextCompat.getDrawable(ApplicationLoader.getAppContext(), resource)
+        return ContextCompat.getDrawable(ApplicationLoader.context, resource)
     }
 }

@@ -20,7 +20,7 @@ public class SessionStorage {
      * Constructs a SessionStorage instance and initializes SharedPreferences and its editor.
      */
     public SessionStorage() {
-        this.pref = ApplicationLoader.getAppContext().getSharedPreferences(
+        this.pref = ApplicationLoader.context.getSharedPreferences(
                 SHARED_PREFERENCE_NAME,
                 Context.MODE_PRIVATE
         );
@@ -111,25 +111,25 @@ public class SessionStorage {
      * @param <T>   The type of the class.
      * @return An object of the specified class, or a default object if the JSON is not found.
      */
-    public <T> T deserialize(String key, Class<T> clazz) {
+  /*  public <T> T deserialize(String key, Class<T> clazz) {
         String json = this.getString(key);
         if (Validator.isNullOrEmpty(json)) {
             json = "{}";
         }
         return ApplicationLoader.getGson().fromJson(json, clazz);
     }
-
+*/
     /**
      * Inserts a JSON-serializable object into SharedPreferences with the specified key.
      *
      * @param key The key for storing the JSON string.
      * @param o   The object to be serialized and stored.
      */
-    public void insertJson(String key, Object o) {
-        this.editor.putString(key,ApplicationLoader.getGson().toJson(o));
-        editor.apply();
-        editor.commit();
-    }
+//    public void insertJson(String key, Object o) {
+//        this.editor.putString(key,ApplicationLoader.getGson().toJson(o));
+//        editor.apply();
+//        editor.commit();
+//    }
 
 
     /**

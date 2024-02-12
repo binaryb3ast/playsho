@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="font_h5" parent="@android:style/TextAppearance.Small">
+        <item name="android:fontFamily">@font/roboto_bold</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="fontStyle">normal</item>
+        <item name="android:fontWeight" tools:targetApi="o">700</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineHeight" tools:targetApi="p">33sp</item>
+    </style>
+</resources>

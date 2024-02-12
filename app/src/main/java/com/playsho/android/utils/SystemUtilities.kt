@@ -59,7 +59,7 @@ object SystemUtilities {
      */
     fun changeStatusBarBackgroundColor(activity: Activity, color: Int, isDark: Boolean) {
         changeStatusBarIconColor(activity, isDark)
-        activity.window.statusBarColor = ContextCompat.getColor(ApplicationLoader.getAppContext(), color)
+        activity.window.statusBarColor = ContextCompat.getColor(ApplicationLoader.context, color)
     }
 
     /**
@@ -93,7 +93,7 @@ object SystemUtilities {
      * @param milliseconds The duration of the vibration in milliseconds.
      */
     fun doVibrate(milliseconds: Long) {
-        val vibrator = ApplicationLoader.getAppContext().getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        val vibrator = ApplicationLoader.context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             vibrator.vibrate(VibrationEffect.createOneShot(milliseconds, VibrationEffect.DEFAULT_AMPLITUDE))
         } else {
@@ -108,7 +108,7 @@ object SystemUtilities {
      * @param text  The text to be copied.
      */
     fun copyToClipboard(label: String, text: String) {
-        val clipboard = ApplicationLoader.getAppContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboard = ApplicationLoader.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText(label, text)
         clipboard.setPrimaryClip(clip)
     }
@@ -137,7 +137,7 @@ object SystemUtilities {
      * @param view The view for which the soft keyboard is shown.
      */
     fun showKeyboard(view: View) {
-        val inputMethodManager = ApplicationLoader.getAppContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputMethodManager = ApplicationLoader.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
     }
 
@@ -147,7 +147,7 @@ object SystemUtilities {
      * @param view The view for which the soft keyboard is hidden.
      */
     fun hideKeyboard(view: View) {
-        val inputMethodManager = ApplicationLoader.getAppContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputMethodManager = ApplicationLoader.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
