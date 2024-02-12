@@ -1,7 +1,7 @@
-package com.playsho.android.utils;
+package com.playsho.android.utils
 
-import android.os.Handler;
-import android.os.Looper;
+import android.os.Handler
+import android.os.Looper
 
 /**
  * A utility class for debouncing operations in Android applications.
@@ -13,20 +13,9 @@ import android.os.Looper;
  * of time has passed without further triggers. It's particularly useful in scenarios where you want
  * to delay or prevent rapid, repetitive actions such as button clicks or user input.
  */
-public class Debouncer {
-    private final Handler handler = new Handler(Looper.getMainLooper());
-    private Runnable runnable;
-    private final long delayMillis;
-
-    /**
-     * Constructs a Debouncer with the specified delay interval.
-     *
-     * @param delayMillis The delay interval in milliseconds. The Runnable will be executed after
-     *                    this delay, as long as no new debounce requests are made.
-     */
-    public Debouncer(long delayMillis) {
-        this.delayMillis = delayMillis;
-    }
+class Debouncer(private val delayMillis: Long) {
+    private val handler = Handler(Looper.getMainLooper())
+    private var runnable: Runnable? = null
 
     /**
      * Debounces a Runnable, ensuring it is executed after the specified delay, and canceling
@@ -34,21 +23,21 @@ public class Debouncer {
      *
      * @param runnable The Runnable to be debounced.
      */
-    public void debounce(Runnable runnable) {
+    fun debounce(runnable: Runnable) {
         // Cancel the previous runnable if it exists
-        cancel();
+        cancel()
 
-        this.runnable = runnable;
-        handler.postDelayed(runnable, delayMillis);
+        this.runnable = runnable
+        handler.postDelayed(runnable, delayMillis)
     }
 
     /**
      * Cancels any pending execution of the debounced Runnable.
      */
-    public void cancel() {
-        if (runnable != null) {
-            handler.removeCallbacks(runnable);
-            runnable = null;
+    fun cancel() {
+        runnable?.let {
+            handler.removeCallbacks(it)
+            runnable = null
         }
     }
 }
