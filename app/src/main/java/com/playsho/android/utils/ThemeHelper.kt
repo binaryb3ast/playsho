@@ -40,6 +40,26 @@ object ThemeHelper {
             DimensionUtils.dpToPx(strokeWidth.toFloat()).toInt(),
             ContextCompat.getColor(ApplicationLoader.context, strokeColor)
         )
+
+        return gradientDrawable
+    }
+
+    fun createRect(
+        @ColorRes color: Int,
+                   radius: Int,
+        @ColorRes strokeColor: Int,
+        strokeWidth: Int,
+        dashWidth:Float,
+        dashGap:Float,
+    ): GradientDrawable {
+        val gradientDrawable = createRect(color, radius)
+        gradientDrawable.setStroke(
+            DimensionUtils.dpToPx(strokeWidth.toFloat()),
+            ContextCompat.getColor(ApplicationLoader.context, strokeColor),
+            DimensionUtils.dpToPx(dashWidth).toFloat(),
+            DimensionUtils.dpToPx(dashGap).toFloat()
+        )
+
         return gradientDrawable
     }
 

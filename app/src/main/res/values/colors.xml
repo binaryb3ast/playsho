@@ -7,10 +7,12 @@
     <color name="icon_white">#FFFFFF</color>
     <color name="icon_secondary">#0FABC6</color>
     <color name="icon_disable">#E0E0E2</color>
-    <color name="icon_low_emphasis">#A1A3A8</color>
+    <color name="icon_low_emphasis">#767981</color>
     <color name="button_primary">#254FC3</color>
     <color name="button_text_active">#ffffff</color>
     <color name="text_subtitle">#767981</color>
+    <color name="text_regular">#F7F7F8</color>
     <color name="button_text_deactive">#CDCED1</color>
     <color name="button_disable">#777777</color>
+    <color name="neutral_100">#323641</color>
 </resources>

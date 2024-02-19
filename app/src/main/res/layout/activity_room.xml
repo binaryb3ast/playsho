@@ -9,18 +9,104 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:background="@color/black_background"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:background="@color/black_background">
 
         <RelativeLayout
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/toolbar_height"/>
+            android:layout_height="@dimen/toolbar_height">
 
-        <com.playsho.android.component.Icon
-            android:layout_width="24dp"
-            app:color="@color/text_subtitle"
-            android:src="@drawable/ic_action_setting"
-            android:layout_height="24dp"/>
+            <com.playsho.android.component.Icon
+                android:layout_width="@dimen/icon_default_size"
+                android:layout_height="@dimen/icon_default_size"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/ic_action_setting"
+                app:color="@color/icon_low_emphasis" />
+
+            <LinearLayout
+                android:id="@+id/container_add"
+                android:orientation="horizontal"
+                android:layout_marginStart="16dp"
+                android:gravity="center_vertical"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.playsho.android.component.Sheet
+                    style="@style/font_body_strong"
+                    android:text="@string/add_friends"
+                    android:layout_marginStart="12dp"
+                    android:textColor="@color/text_regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <com.playsho.android.component.Icon
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_action_eye"
+                    app:color="@color/icon_low_emphasis" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+        
+        <RelativeLayout
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginTop="32dp"
+            android:layout_below="@id/toolbar"
+            android:id="@+id/container_add_link"
+            android:layout_width="match_parent"
+            android:layout_height="120dp">
+
+
+            <com.playsho.android.component.Sheet
+                style="@style/font_h5"
+                android:layout_centerInParent="true"
+                android:text="@string/add_stream_link_to_play"
+                android:layout_marginStart="12dp"
+                android:textColor="@color/text_regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/container_input"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="12dp">
+
+            <com.playsho.android.component.Icon
+                android:layout_width="@dimen/icon_default_size"
+                android:layout_height="@dimen/icon_default_size"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="12dp"
+                android:src="@drawable/ic_action_send_rocket"
+                app:color="@color/neutral_900" />
+
+            <com.playsho.android.component.Icon
+                android:layout_width="@dimen/icon_default_size"
+                android:layout_height="@dimen/icon_default_size"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="12dp"
+                android:src="@drawable/ic_action_smiley"
+                app:color="@color/neutral_500" />
+
+        </RelativeLayout>
+
 
     </RelativeLayout>
 </layout>
