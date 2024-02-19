@@ -1,12 +1,25 @@
 package com.playsho.android.ui
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.TextView
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.playsho.android.R
 import com.playsho.android.base.BaseActivity
 import com.playsho.android.databinding.ActivitySplashBinding
 import com.playsho.android.utils.DimensionUtils
+import com.playsho.android.utils.LocalController
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.util.Timer
+import java.util.TimerTask
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : BaseActivity<ActivitySplashBinding>() {
@@ -22,19 +35,24 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
         super.onCreate(savedInstanceState)
         setStatusBarColor(R.color.black_background, true)
         setupLogoWidth()
-        binding.imgLogo.animate()
-            .translationY(calculateFinalYPosition().toFloat())
-            .setDuration(1000) // Adjust the duration as needed
-            .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator.accelerate_decelerate))
-            .start()
+        binding.txtDescription.typeWrite(this, LocalController.getString(R.string.splash_description) , 33)
+        binding.btn.setOnClickListener {
+            openActivity<RoomActivity>(
+                "code" to "value"
+            )
+        }
     }
 
-    private fun calculateFinalYPosition(): Int {
-        // You need to calculate the Y position where you want the ImageView to end up.
-        // For example, if you want it to be at 50% of the screen height, you can calculate it like this:
-        val screenHeight = resources.displayMetrics.heightPixels
-        return (screenHeight * 0.5).toInt()
+    fun TextView.typeWrite(lifecycleOwner: LifecycleOwner, text: String, intervalMs: Long) {
+        this@typeWrite.text = ""
+        lifecycleOwner.lifecycleScope.launch {
+            repeat(text.length) {
+                delay(intervalMs)
+                this@typeWrite.text = text.take(it + 1)
+            }
+        }
     }
+
 
     private fun setupLogoWidth() {
         val layoutParams = binding.imgLogo.layoutParams
@@ -43,6 +61,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
         val calculatedWidth = screenWidth - totalSideMargin
         layoutParams.width = calculatedWidth
     }
+
 
 
 }

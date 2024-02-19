@@ -11,4 +11,6 @@
     <string name="add_video_url_btn">Add and Play!</string>
     <string name="tutorial">1- Create a room without signup!\n2- Add video link\n3- Add friends\n4- Watch together and enjoy! :)</string>
     <string name="slogan">Play and watch togather</string>
+    <string name="create_a_room">Create a room</string>
+    <string name="splash_description">1- Create a room without signup!\n2- Add video link\n3- Add friends\n4- Watch together and enjoy! :)</string>
 </resources>

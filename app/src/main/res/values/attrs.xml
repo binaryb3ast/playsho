@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="Button">
+        <attr name="mode" format="string" />
+        <attr name="disable_click" format="boolean" />
+    </declare-styleable>
+
+
+
+</resources>

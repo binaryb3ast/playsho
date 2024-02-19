@@ -7,26 +7,58 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:background="@color/black_background"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/black_background">
 
-        <com.playsho.android.component.PhotoBoard
-            android:id="@+id/img_logo"
-            android:layout_width="80dp"
-            android:adjustViewBounds="true"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:src="@drawable/img_logo" />
-
-        <TextView
-            android:layout_marginTop="24dp"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/img_logo"
-            style="@style/font_h5"
-            android:textColor="@color/white"
-            android:text="@string/slogan"
+        <LinearLayout
+            android:id="@+id/containerLogo"
             android:layout_width="wrap_content"
+            android:layout_marginTop="150dp"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.playsho.android.component.PhotoBoard
+                android:id="@+id/img_logo"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:src="@drawable/img_logo" />
+
+            <TextView
+                style="@style/font_h5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/slogan"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <com.playsho.android.component.Sheet
+            android:id="@+id/txt_description"
+            android:gravity="center"
+            android:textColor="@color/text_subtitle"
+            android:text="@string/splash_description"
+            android:layout_above="@id/btn"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="32dp"
+            style="@style/font_subtitle_regular"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
+        <com.playsho.android.component.Button
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:id="@+id/btn"
+            android:text="@string/create_a_room"
+            android:layout_marginBottom="32dp"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"/>
+
 
     </RelativeLayout>
 </layout>

@@ -155,4 +155,21 @@ abstract class BaseActivity<B : ViewDataBinding> : AppCompatActivity() {
         val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         connectivityManager.unregisterNetworkCallback(networkListener)
     }
+
+    protected inline fun <reified T : Activity> Activity.openActivity(vararg params: Pair<String, Any?>) {
+        val intent = createIntent<T>().apply {
+            for (param in params) {
+                val (key, value) = param
+                when (value) {
+                    is String -> putExtra(key, value)
+                    is Int -> putExtra(key, value)
+                    // Add more cases for other data types as needed
+                }
+            }
+        }
+        startActivity(intent)
+    }
+
+    protected inline fun <reified T: Activity> Context.createIntent() =
+        Intent(this, T::class.java)
 }
