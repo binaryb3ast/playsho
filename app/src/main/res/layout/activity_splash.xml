@@ -37,6 +37,20 @@
         </LinearLayout>
 
         <com.playsho.android.component.Sheet
+            android:id="@+id/txtName"
+            android:gravity="center"
+            android:textColor="@color/neutral_900"
+            android:layout_marginTop="64dp"
+            android:layout_below="@id/containerLogo"
+            android:text="@string/loading"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="32dp"
+            style="@style/font_subtitle_regular"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <com.playsho.android.component.Sheet
             android:id="@+id/txt_description"
             android:gravity="center"
             android:textColor="@color/text_subtitle"

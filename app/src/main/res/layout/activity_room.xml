@@ -89,19 +89,33 @@
             android:layout_marginBottom="12dp">
 
             <com.playsho.android.component.Icon
+                android:id="@+id/ic_send"
                 android:layout_width="@dimen/icon_default_size"
                 android:layout_height="@dimen/icon_default_size"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="12dp"
+                android:layout_marginStart="12dp"
                 android:src="@drawable/ic_action_send_rocket"
                 app:color="@color/neutral_900" />
 
+            <EditText
+                style="@style/font_subtitle_regular"
+                android:textColorHint="@color/neutral_500"
+                android:hint="@string/type_a_message_or_link"
+                android:layout_toStartOf="@id/ic_send"
+                android:layout_toEndOf="@id/ic_emoji"
+                android:background="@null"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
             <com.playsho.android.component.Icon
+                android:id="@+id/ic_emoji"
                 android:layout_width="@dimen/icon_default_size"
                 android:layout_height="@dimen/icon_default_size"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
                 android:src="@drawable/ic_action_smiley"
                 app:color="@color/neutral_500" />
 

@@ -12,6 +12,7 @@ import android.telephony.TelephonyManager
 import android.util.Log
 import androidx.core.content.ContextCompat.getSystemService
 import com.playsho.android.base.ApplicationLoader
+import com.playsho.android.data.Device
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.*
@@ -47,6 +48,22 @@ object DeviceUtils {
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
             "ERR"
+        }
+    }
+
+    fun getAppVersionCode(): Int {
+        val packageManager = ApplicationLoader.context.packageManager
+        val packageName = ApplicationLoader.context.packageName
+        return try {
+            val packageInfo = packageManager.getPackageInfo(packageName, 0)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                packageInfo.longVersionCode.toInt()
+            } else {
+                packageInfo.versionCode
+            }
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+            -1 // Return -1 as an error code
         }
     }
 
@@ -176,6 +193,21 @@ object DeviceUtils {
 
     fun getOsVersion(): String {
         return Build.VERSION.RELEASE
+    }
+
+    fun createDevice():Device{
+        return Device(
+            brand = this.getBrand().lowercase(),
+            os = "android",
+            model =  this.getModel(),
+            secret = this.getDeviceUniqueId(),
+            manufacturer = this.getManufacturer(),
+            osVersion = this.getOsVersion(),
+            appVersionName = this.getAppVersionName(),
+            appVersion = this.getAppVersionCode(),
+            lastUpdateAt = this.getLastUpdateTime(),
+            firstInstallAt = this.getFirstInstallTime(),
+        )
     }
 
     @SuppressLint("HardwareIds")

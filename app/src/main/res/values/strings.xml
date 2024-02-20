@@ -15,4 +15,6 @@
     <string name="splash_description">1- Create a room without signup!\n2- Add video link\n3- Add friends\n4- Watch together and enjoy! :)</string>
     <string name="add_friends">+ Add friends</string>
     <string name="add_stream_link_to_play">+ Add stream link to play</string>
+    <string name="type_a_message_or_link">Type a message or link</string>
+    <string name="loading">Loading...</string>
 </resources>
