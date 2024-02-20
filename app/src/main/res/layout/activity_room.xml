@@ -28,53 +28,62 @@
 
             <LinearLayout
                 android:id="@+id/container_add"
-                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginStart="16dp"
                 android:gravity="center_vertical"
-                android:layout_centerVertical="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:orientation="horizontal">
 
                 <com.playsho.android.component.Sheet
                     style="@style/font_body_strong"
-                    android:text="@string/add_friends"
-                    android:layout_marginStart="12dp"
-                    android:textColor="@color/text_regular"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="@string/add_friends"
+                    android:textColor="@color/text_regular" />
 
                 <com.playsho.android.component.Icon
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="12dp"
-                    android:layout_marginStart="8dp"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginBottom="8dp"
                     android:src="@drawable/ic_action_eye"
                     app:color="@color/icon_low_emphasis" />
 
             </LinearLayout>
 
         </RelativeLayout>
-        
-        <RelativeLayout
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginTop="32dp"
+
+        <androidx.media3.ui.PlayerView
+            android:id="@+id/playerView"
             android:layout_below="@id/toolbar"
+            android:layout_width="match_parent"
+            android:visibility="visible"
+            app:show_buffering="when_playing"
+            android:layout_height="220dp"/>
+
+        <RelativeLayout
+            android:visibility="gone"
             android:id="@+id/container_add_link"
             android:layout_width="match_parent"
-            android:layout_height="120dp">
+            android:layout_height="120dp"
+            android:layout_below="@id/toolbar"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="32dp">
 
 
             <com.playsho.android.component.Sheet
                 style="@style/font_h5"
-                android:layout_centerInParent="true"
-                android:text="@string/add_stream_link_to_play"
-                android:layout_marginStart="12dp"
-                android:textColor="@color/text_regular"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="12dp"
+                android:text="@string/add_stream_link_to_play"
+                android:textColor="@color/text_regular" />
 
         </RelativeLayout>
 
@@ -94,20 +103,20 @@
                 android:layout_height="@dimen/icon_default_size"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="12dp"
                 android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
                 android:src="@drawable/ic_action_send_rocket"
                 app:color="@color/neutral_900" />
 
             <EditText
                 style="@style/font_subtitle_regular"
-                android:textColorHint="@color/neutral_500"
-                android:hint="@string/type_a_message_or_link"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_toStartOf="@id/ic_send"
                 android:layout_toEndOf="@id/ic_emoji"
                 android:background="@null"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:hint="@string/type_a_message_or_link"
+                android:textColorHint="@color/neutral_500" />
 
             <com.playsho.android.component.Icon
                 android:id="@+id/ic_emoji"

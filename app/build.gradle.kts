@@ -69,7 +69,9 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
-
+    implementation("androidx.media3:media3-exoplayer:1.2.1")
+    implementation("androidx.media3:media3-ui:1.2.1")
+    implementation("androidx.media3:media3-exoplayer-dash:1.2.1")
     implementation("com.squareup.picasso:picasso:2.71828")
 
     implementation("com.github.razir.progressbutton:progressbutton:2.1.0")
