@@ -11,10 +11,12 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MimeTypes
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.PlayerView
 import com.playsho.android.R
 import com.playsho.android.base.BaseActivity
 import com.playsho.android.databinding.ActivityRoomBinding
@@ -68,7 +70,9 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
         player = ExoPlayer.Builder(this)
             .build()
             .also { exoPlayer ->
+
                 binding.playerView.player = exoPlayer
+
                 // Update the track selection parameters to only pick standard definition tracks
                 exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters
                     .buildUpon()
@@ -76,7 +80,7 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
                     .build()
 
                 val mediaItem = MediaItem.Builder()
-                    .setUri("https://download.samplelib.com/mp4/sample-5s.mp4")
+                    .setUri("https://dl3.freeserver.top/st01/film/1402/12/The.Zone.of.Interest.2023.480p.WEB-DL.HardSub.DigiMoviez.mp4?md5=OhTtoOF_n_FV1xg_eIyCoA&expires=1708853204")
                     .setMimeType(MimeTypes.VIDEO_MP4)
                     .build()
                 exoPlayer.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
@@ -87,11 +91,12 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
             .apply {
                 addListener(object : Player.Listener {
                     override fun onIsPlayingChanged(isPlayingValue: Boolean) {
-
+                        Log.e(TAG, "onIsPlayingChanged: $isPlayingValue")
                     }
 
                     override fun onTimelineChanged(timeline: Timeline, reason: Int) {
                         super.onTimelineChanged(timeline, reason)
+                        Log.e(TAG, "onTimelineChanged: $reason")
                     }
 
                     override fun onPositionDiscontinuity(
@@ -99,27 +104,43 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
                         newPosition: Player.PositionInfo,
                         reason: Int
                     ) {
+                        Log.e(TAG, "onPositionDiscontinuity: ${newPosition.positionMs}")
+
                         super.onPositionDiscontinuity(oldPosition, newPosition, reason)
-                        Log.d(TAG, "onPositionDiscontinuity: ${newPosition.positionMs}")
                     }
+
+                    override fun onPlaybackStateChanged(playbackState: Int) {
+                        super.onPlaybackStateChanged(playbackState)
+                        Log.e(TAG, "onPlaybackStateChanged: $playbackState")
+                    }
+
+
+
 
                     override fun onIsLoadingChanged(isLoading: Boolean) {
                         super.onIsLoadingChanged(isLoading)
-                        Log.e(TAG, "onIsLoadingChanged: " + isLoading )
+                        Log.e(TAG, "onIsLoadingChanged: $isLoading")
                     }
+
+                    override fun onPlayerError(error: PlaybackException) {
+                        super.onPlayerError(error)
+                        Log.e(TAG, "onPlayerError: ", error )
+                    }
+
 
                     override fun onTrackSelectionParametersChanged(parameters: TrackSelectionParameters) {
                         super.onTrackSelectionParametersChanged(parameters)
 
-                        Log.e("VideoScreen", "onTrackSelectionParametersChanged")
-
                         val currentProgressTime = player?.currentPosition
+                        Log.e(TAG, "Current progress time: $currentProgressTime milliseconds")
+                        // You can now use the current progress time as needed
 
 
                     }
 
                 })
             }
+
     }
 
     private val progressListener = object : Player.Listener {

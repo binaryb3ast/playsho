@@ -12,6 +12,7 @@ import com.playsho.android.base.BaseActivity
 import com.playsho.android.databinding.ActivitySplashBinding
 import com.playsho.android.network.Agent
 import com.playsho.android.network.Response
+import com.playsho.android.network.SocketManager
 import com.playsho.android.utils.Crypto
 import com.playsho.android.utils.DimensionUtils
 import com.playsho.android.utils.LocalController
@@ -51,6 +52,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
         if (AccountInstance.hasAnyAccount()) {
             AccountInstance.use(AccountInstance.getAccounts()[0])
             binding.txtName.text = "Login as ${AccountInstance.getUserData("user_name")}"
+            SocketManager.initialize().establish()
         }
         else {
             val keyPair = Crypto.generateRSAKeyPair()
