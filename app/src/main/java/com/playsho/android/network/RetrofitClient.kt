@@ -18,7 +18,7 @@ object RetrofitClient {
     private const val REQUEST_READ_TIME_OUT = 15L
     private const val REQUEST_CONNECT_TIME_OUT = 15L
     private const val BASE_URL_TEST = "http://192.168.100.110:3000/"
-    private const val SOCKET_URL_TEST = "http://192.168.100.110:3000"
+    private const val SOCKET_URL_TEST = "http://192.168.100.110:7777"
     private const val BASE_URL = "https://d.digilog.pro/"
 
     private val CONNECTION_SPECS = listOf(

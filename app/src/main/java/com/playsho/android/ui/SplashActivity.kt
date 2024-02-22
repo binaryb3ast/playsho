@@ -2,6 +2,7 @@ package com.playsho.android.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.View
 import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
@@ -44,51 +45,89 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
             LocalController.getString(R.string.splash_description),
             33
         )
-        binding.btn.setOnClickListener {
-            openActivity<RoomActivity>(
-                "code" to "value"
-            )
-        }
+
         if (AccountInstance.hasAnyAccount()) {
             AccountInstance.use(AccountInstance.getAccounts()[0])
             binding.txtName.text = "Login as ${AccountInstance.getUserData("user_name")}"
             SocketManager.initialize().establish()
+        } else {
+           requestGenerateDevice()
         }
-        else {
-            val keyPair = Crypto.generateRSAKeyPair()
-            // Convert public key to string
-            val publicKeyString = Crypto.publicKeyToString(keyPair.public)
-            // Convert private key to string
-            val privateKeyString = Crypto.privateKeyToString(keyPair.private)
-            Agent.Device.generate(publicKeyString).enqueue(object : Callback<Response> {
 
-                override fun onFailure(call: Call<Response>, t: Throwable) {}
+        binding.btn.setOnClickListener {
+            binding.btn.startProgress()
+            if (AccountInstance.hasAnyAccount()){
+                requestCreateRoom()
+            }else{
+                requestGenerateDevice()
+            }
+        }
+    }
 
-                override fun onResponse(
-                    call: Call<Response>,
-                    response: retrofit2.Response<Response>
-                ) {
-                    val account = AccountInstance.createAccount(
-                        response.body()?.result?.device?.userName ?: "", "", Bundle().apply {
-                            putString(
-                                "user_name",
-                                response.body()?.result?.device?.userName ?: "NO NAME"
-                            )
-                            putString("tag", response.body()?.result?.device?.tag)
-                        });
-                    binding.txtName.text = "Login as ${response.body()?.result?.device?.userName ?: "ERROR"}"
+    private fun requestGenerateDevice(){
+        binding.txtName.text = "Loading..."
 
-                    AccountInstance.use(account);
-                    response.body()?.result?.device?.token?.let {
-                        AccountInstance.setAuthToken(account,"Bearer",
-                            it
+        val keyPair = Crypto.generateRSAKeyPair()
+        // Convert public key to string
+        val publicKeyString = Crypto.publicKeyToString(keyPair.public)
+        // Convert private key to string
+        val privateKeyString = Crypto.privateKeyToString(keyPair.private)
+        Agent.Device.generate(publicKeyString).enqueue(object : Callback<Response> {
+
+            override fun onFailure(call: Call<Response>, t: Throwable) {
+                binding.txtName.text = "Error !"
+
+            }
+
+            override fun onResponse(
+                call: Call<Response>,
+                response: retrofit2.Response<Response>
+            ) {
+                val account = AccountInstance.createAccount(
+                    response.body()?.result?.device?.userName ?: "", "", Bundle().apply {
+                        putString(
+                            "user_name",
+                            response.body()?.result?.device?.userName ?: "NO NAME"
                         )
-                    }
-                    AccountInstance.setAuthToken(account,"private_key", privateKeyString)
-                    AccountInstance.setAuthToken(account,"public_key", publicKeyString)
+                        putString("tag", response.body()?.result?.device?.tag)
+                    });
+                binding.txtName.text =
+                    "Login as ${response.body()?.result?.device?.userName ?: "ERROR"}"
+
+                AccountInstance.use(account);
+                response.body()?.result?.device?.token?.let {
+                    AccountInstance.setAuthToken(
+                        account, "Bearer",
+                        it
+                    )
                 }
-            })
-        }
+                AccountInstance.setAuthToken(account, "private_key", privateKeyString)
+                AccountInstance.setAuthToken(account, "public_key", publicKeyString)
+                SocketManager.initialize().establish()
+            }
+        })
+    }
+
+    private fun requestCreateRoom() {
+        Agent.Room.create().enqueue(object : Callback<Response> {
+
+            override fun onFailure(call: Call<Response>, t: Throwable) {
+                binding.btn.stopProgress()
+            }
+
+            override fun onResponse(
+                call: Call<Response>,
+                response: retrofit2.Response<Response>
+            ) {
+                if(response.isSuccessful){
+                    binding.btn.stopProgress()
+                    openActivity<RoomActivity>(
+                        "tag" to response.body()?.result?.room?.tag
+                    )
+                }
+
+            }
+        })
     }
 
     private fun TextView.typeWrite(lifecycleOwner: LifecycleOwner, text: String, intervalMs: Long) {

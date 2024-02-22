@@ -4,11 +4,17 @@ import android.util.Log
 import com.playsho.android.utils.accountmanager.AccountInstance
 import io.socket.client.IO
 import io.socket.client.Socket
-import io.socket.engineio.client.transports.WebSocket
+import org.json.JSONException
+import org.json.JSONObject
 
 object SocketManager {
     private const val TAG = "SocketManager"
     private var socket: Socket? = null
+
+    object EVENTS {
+       const val SEND_MESSAGE =  "room_msg"
+       const val NEW_MESSAGE =  "new_message"
+    }
 
     @Synchronized
     fun initialize(): SocketManager {
@@ -18,10 +24,12 @@ object SocketManager {
 
                     val options = IO.Options().apply {
                         // Set transports to WebSocket only
+                        forceNew = true
+                        query = "token=${AccountInstance.getAuthToken("Bearer")}"
 
                     }
                     // Create a new socket instance
-                    socket = IO.socket(RetrofitClient.getSocketBaseUrl())
+                    socket = IO.socket("http://192.168.100.110:7777" , options)
 
                     socket!!.on(Socket.EVENT_CONNECT) { args ->
                         Log.e(TAG, "EVENT_CONNECT:")
@@ -29,36 +37,21 @@ object SocketManager {
                             println(element)
                         }
                     }
-                    socket!!.on(Socket.EVENT_CONNECTING) { args ->
-                        Log.e(TAG, "EVENT_CONNECTING: $args")
-                        for (element in args) {
-                            println(element)
-                        }
-                    }
+
                     socket!!.on(Socket.EVENT_CONNECT_ERROR) { args ->
                         Log.e(TAG, "EVENT_CONNECT_ERROR: $args")
                         for (element in args) {
                             println(element)
                         }
                     }
-                    socket!!.on(Socket.EVENT_CONNECT_TIMEOUT) { args ->
-                        Log.e(TAG, "EVENT_CONNECT_TIMEOUT: $args")
-                        for (element in args) {
-                            println(element)
-                        }
-                    }
+
                     socket!!.on(Socket.EVENT_DISCONNECT) { args ->
                         Log.e(TAG, "EVENT_DISCONNECT: $args")
                         for (element in args) {
                             println(element)
                         }
                     }
-                    socket!!.on(Socket.EVENT_ERROR) { args ->
-                        Log.e(TAG, "EVENT_ERROR: $args")
-                        for (element in args) {
-                            println(element)
-                        }
-                    }
+
                     socket!!.on(Socket.EVENT_DISCONNECT) { args ->
                         Log.e(TAG, "EVENT_DISCONNECT: $args")
                         for (element in args) {
@@ -71,6 +64,26 @@ object SocketManager {
         return this;
     }
 
+    fun joinRoom(room: String) {
+        val json = JSONObject()
+        try {
+            json.put("room", room)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        socket?.emit("join", json)
+    }
+
+    fun leaveRoom(room: String) {
+        val json = JSONObject()
+        try {
+            json.put("room", room)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        socket?.emit("join", json)
+    }
+
     @Synchronized
     fun establish() {
         socket?.connect()
@@ -80,5 +93,21 @@ object SocketManager {
     fun close() {
         socket?.disconnect()
         socket = null
+    }
+
+    fun on(eventName: String, callback: (Array<Any>) -> Unit) {
+        socket?.on(eventName, callback)
+    }
+
+    @Synchronized
+    fun sendMessage(room:String , message:String) {
+        val json = JSONObject()
+        try {
+            json.put("room", room)
+            json.put("message", message)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        socket?.emit(EVENTS.SEND_MESSAGE , json)
     }
 }

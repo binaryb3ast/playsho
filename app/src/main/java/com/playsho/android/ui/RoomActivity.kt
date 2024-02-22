@@ -17,10 +17,17 @@ import androidx.media3.common.Timeline
 import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import com.google.gson.Gson
 import com.playsho.android.R
+import com.playsho.android.base.ApplicationLoader
 import com.playsho.android.base.BaseActivity
+import com.playsho.android.data.Message
 import com.playsho.android.databinding.ActivityRoomBinding
+import com.playsho.android.network.SocketManager
+import com.playsho.android.utils.Crypto
 import com.playsho.android.utils.ThemeHelper
+import com.playsho.android.utils.accountmanager.AccountInstance
+import kotlin.math.log
 
 class RoomActivity : BaseActivity<ActivityRoomBinding>() {
 
@@ -34,7 +41,9 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
     private var playWhenReady = true
     private var mediaItemIndex = 0
     private var playbackPosition = 0L
+    val gson = Gson()
 
+    private var ROOM_TAG = "";
     override fun getLayoutResourceId(): Int {
         return R.layout.activity_room
     }
@@ -51,6 +60,7 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
     public override fun onResume() {
         super.onResume()
         hideSystemUi()
+        SocketManager.joinRoom(getIntentStringExtra("tag") ?: "crash_room")
         if (player == null) {
             initializePlayer()
         }
@@ -63,6 +73,7 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
     public override fun onStop() {
         super.onStop()
         releasePlayer()
+
     }
 
     private fun initializePlayer() {
@@ -86,7 +97,7 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
                 exoPlayer.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
                 exoPlayer.playWhenReady = playWhenReady
                 exoPlayer.addListener(playbackStateListener)
-                exoPlayer.prepare()
+//                exoPlayer.prepare()
             }
             .apply {
                 addListener(object : Player.Listener {
@@ -115,8 +126,6 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
                     }
 
 
-
-
                     override fun onIsLoadingChanged(isLoading: Boolean) {
                         super.onIsLoadingChanged(isLoading)
                         Log.e(TAG, "onIsLoadingChanged: $isLoading")
@@ -124,7 +133,7 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
 
                     override fun onPlayerError(error: PlaybackException) {
                         super.onPlayerError(error)
-                        Log.e(TAG, "onPlayerError: ", error )
+                        Log.e(TAG, "onPlayerError: ", error)
                     }
 
 
@@ -199,10 +208,36 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ROOM_TAG = getIntentStringExtra("tag") ?: "crash_room"
+        SocketManager.joinRoom(ROOM_TAG)
         setStatusBarColor(R.color.black_background, true)
         initUi()
+        binding.icSend.setOnClickListener {
+            var stringPK: String = AccountInstance.getAuthToken("public_key") ?: "NOT_SET";
+            if (stringPK != "NOT_SET") {
+                val encryptedMessage = Crypto.encryptMessage(
+                    binding.input.text.toString(),
+                    Crypto.stringToPublicKey(stringPK)
+                )
+                sendMsgThroughSocket(encryptedMessage)
+            }
+        }
 
+        SocketManager.on(SocketManager.EVENTS.NEW_MESSAGE) { data ->
+            Log.e(TAG, "NEW_MESSAGE: ")
+            val message = gson.fromJson(data[0].toString(), Message::class.java)
+            var stringPK: String = AccountInstance.getAuthToken("private_key") ?: "NOT_SET";
+            if (stringPK != "NOT_SET") {
+                val decryptedMessage = Crypto.decryptMessage(
+                    message.message,
+                    Crypto.stringToPrivateKey(stringPK)
+                )
+            }
+        }
+    }
 
+    private fun sendMsgThroughSocket(msg: String) {
+        SocketManager.sendMessage(ROOM_TAG, msg)
     }
 
     private fun initUi() {

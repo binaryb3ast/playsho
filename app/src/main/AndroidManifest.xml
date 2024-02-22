@@ -43,7 +43,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.playsho.android.ui.RoomActivity" />
+        <activity android:name="com.playsho.android.ui.RoomActivity" android:windowSoftInputMode="adjustPan"/>
     </application>
 
 </manifest>

@@ -79,7 +79,8 @@ dependencies {
 
     implementation("androidx.annotation:annotation-jvm:1.7.1")
 
-    implementation("io.socket:socket.io-client:1.0.0")
-    implementation("io.socket:engine.io-client:1.0.0")
+    implementation("io.socket:socket.io-client:2.0.0") {
+        exclude(group = "org.json", module = "json")
+    }
 
 }

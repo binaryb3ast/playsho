@@ -61,12 +61,12 @@
             android:id="@+id/playerView"
             android:layout_below="@id/toolbar"
             android:layout_width="match_parent"
-            android:visibility="visible"
+            android:visibility="gone"
             app:show_buffering="when_playing"
             android:layout_height="220dp"/>
 
         <RelativeLayout
-            android:visibility="gone"
+            android:visibility="visible"
             android:id="@+id/container_add_link"
             android:layout_width="match_parent"
             android:layout_height="120dp"
@@ -109,6 +109,9 @@
                 app:color="@color/neutral_900" />
 
             <EditText
+                android:inputType="text"
+                android:maxLines="1"
+                android:id="@+id/input"
                 style="@style/font_subtitle_regular"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

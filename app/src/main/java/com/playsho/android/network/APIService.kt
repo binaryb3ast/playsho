@@ -10,4 +10,6 @@ interface APIService {
     @POST(Conf.Path.V1_DEVICE_GENERATE)
     fun generateDevice(@Body body: RequestBody): Call<Response>
 
+    @POST(Conf.Path.V1_ROOM_CREATE)
+    fun createRoom(): Call<Response>
 }

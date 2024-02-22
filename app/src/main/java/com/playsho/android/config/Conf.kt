@@ -9,6 +9,7 @@ object Conf {
 
     object Path {
         const val V1_DEVICE_GENERATE = "/v1/api/device/generate"
+        const val V1_ROOM_CREATE = "/v1/api/room"
     }
 
     object Query {

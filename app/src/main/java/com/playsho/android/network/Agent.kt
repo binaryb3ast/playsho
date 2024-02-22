@@ -34,5 +34,11 @@ object Agent {
 
     }
 
+    object Room {
+        fun create(): Call<Response> {
+            return RetrofitClient.getNetworkConfiguration().createRoom()
+        }
+    }
+
 
 }
