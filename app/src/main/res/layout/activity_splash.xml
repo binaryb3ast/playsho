@@ -13,9 +13,9 @@
         <LinearLayout
             android:id="@+id/containerLogo"
             android:layout_width="wrap_content"
-            android:layout_marginTop="150dp"
-            android:layout_centerHorizontal="true"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="150dp"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -38,41 +38,53 @@
 
         <com.playsho.android.component.Sheet
             android:id="@+id/txtName"
-            android:gravity="center"
-            android:textColor="@color/neutral_900"
-            android:layout_marginTop="64dp"
-            android:layout_below="@id/containerLogo"
-            android:text="@string/loading"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="32dp"
             style="@style/font_subtitle_regular"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_below="@id/containerLogo"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="64dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="32dp"
+            android:gravity="center"
+            android:text="@string/loading"
+            android:textColor="@color/neutral_900" />
 
         <com.playsho.android.component.Sheet
             android:id="@+id/txt_description"
+            style="@style/font_subtitle_regular"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/btn_join"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="32dp"
             android:gravity="center"
-            android:textColor="@color/text_subtitle"
             android:text="@string/splash_description"
+            android:textColor="@color/text_subtitle" />
+
+        <com.playsho.android.component.Sheet
+            android:id="@+id/btn_join"
+            style="@style/font_h5"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
             android:layout_above="@id/btn"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
-            android:layout_marginBottom="32dp"
-            style="@style/font_subtitle_regular"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:text="@string/join_room"
+            android:textColor="@color/button_primary" />
 
         <com.playsho.android.component.Button
+            android:id="@+id/btn"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
-            android:id="@+id/btn"
-            android:text="@string/create_a_room"
             android:layout_marginBottom="32dp"
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"/>
-
+            android:text="@string/create_a_room" />
 
     </RelativeLayout>
 </layout>

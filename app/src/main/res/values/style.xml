@@ -1,12 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor" tools:ignore="NewApi">@android:color/transparent</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:navigationBarColor">@color/white</item>
+    </style>
+
+    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_top_round</item>
+    </style>
+
     <style name="font_h5" parent="@android:style/TextAppearance.Small">
         <item name="android:fontFamily">@font/roboto_bold</item>
         <item name="fontFamily">@font/roboto_bold</item>
         <item name="fontStyle">normal</item>
         <item name="android:fontWeight" tools:targetApi="o">700</item>
         <item name="android:textSize">14sp</item>
+        <item name="android:lineHeight" tools:targetApi="p">33sp</item>
+    </style>
+
+
+    <style name="font_h2" parent="@android:style/TextAppearance.Small">
+        <item name="android:fontFamily">@font/roboto_bold</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="fontStyle">normal</item>
+        <item name="android:fontWeight" tools:targetApi="o">700</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:lineHeight" tools:targetApi="p">33sp</item>
+    </style>
+
+    <style name="font_h3" parent="@android:style/TextAppearance.Small">
+        <item name="android:fontFamily">@font/roboto_bold</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="fontStyle">normal</item>
+        <item name="android:fontWeight" tools:targetApi="o">700</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:lineHeight" tools:targetApi="p">33sp</item>
     </style>
 

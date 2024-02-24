@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:background="@color/black_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.playsho.android.component.Sheet
+            android:text="Add video link"
+            style="@style/font_h3"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="32dp"
+            android:textColor="@color/neutral_900"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        
+        <EditText
+            android:textColorHint="@color/neutral_500"
+            style="@style/font_subtitle_regular"
+            android:maxLines="1"
+            android:id="@+id/input"
+            android:textColor="@color/neutral_900"
+            android:hint="Paste or type video link"
+            android:layout_marginTop="32dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"/>
+
+
+        <com.playsho.android.component.Sheet
+            android:text="You can add any video link from any website with stream support."
+            style="@style/font_body_regular"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/neutral_500"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <com.playsho.android.component.Button
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:id="@+id/btn"
+            android:layout_marginTop="16dp"
+            android:text="@string/create_a_room"
+            android:layout_marginBottom="32dp"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"/>
+
+    </LinearLayout>
+</layout>
