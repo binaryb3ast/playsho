@@ -19,6 +19,15 @@
         <item name="android:lineHeight" tools:targetApi="p">17sp</item>
     </style>
 
+    <style name="font_subtitle_strong" parent="@android:style/TextAppearance.Small">
+        <item name="android:fontFamily">@font/roboto_bold</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="fontStyle">normal</item>
+        <item name="android:fontWeight" tools:targetApi="o">700</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:lineHeight" tools:targetApi="p">17sp</item>
+    </style>
+
     <style name="font_body_strong" parent="@android:style/TextAppearance.Small">
         <item name="android:fontFamily">@font/roboto_bold</item>
         <item name="fontFamily">@font/roboto_bold</item>
@@ -26,5 +35,23 @@
         <item name="android:fontWeight" tools:targetApi="o">700</item>
         <item name="android:textSize">12sp</item>
         <item name="android:lineHeight" tools:targetApi="p">17sp</item>
+    </style>
+
+    <style name="font_body_regular" parent="@android:style/TextAppearance.Small">
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="fontStyle">normal</item>
+        <item name="android:fontWeight" tools:targetApi="o">700</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:lineHeight" tools:targetApi="p">17sp</item>
+    </style>
+
+    <style name="font_caption_regular" parent="@android:style/TextAppearance.Small">
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="fontStyle">normal</item>
+        <item name="android:fontWeight" tools:targetApi="o">700</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:lineHeight" tools:targetApi="p">13sp</item>
     </style>
 </resources>

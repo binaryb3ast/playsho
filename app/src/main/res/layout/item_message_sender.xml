@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <RelativeLayout
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/chat_bubble_sender"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/txt_name"
+                style="@style/font_subtitle_strong"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="John"
+                android:textColor="@color/neutral_900" />
+
+            <TextView
+                android:id="@+id/txt_message"
+                style="@style/font_subtitle_regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txt_name"
+                android:text="You have joined the room"
+                android:textColor="@color/neutral_900" />
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+</layout>

@@ -15,4 +15,6 @@
     <color name="button_text_deactive">#CDCED1</color>
     <color name="button_disable">#777777</color>
     <color name="neutral_100">#323641</color>
+    <color name="neutral_000">#1E222A</color>
+    <color name="bubble_blue">#254FC3</color>
 </resources>

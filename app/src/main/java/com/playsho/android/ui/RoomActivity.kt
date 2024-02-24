@@ -17,8 +17,11 @@ import androidx.media3.common.Timeline
 import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.google.gson.Gson
 import com.playsho.android.R
+import com.playsho.android.adapter.MessageAdapter
 import com.playsho.android.base.ApplicationLoader
 import com.playsho.android.base.BaseActivity
 import com.playsho.android.data.Message
@@ -42,7 +45,6 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
     private var mediaItemIndex = 0
     private var playbackPosition = 0L
     val gson = Gson()
-
     private var ROOM_TAG = "";
     override fun getLayoutResourceId(): Int {
         return R.layout.activity_room
@@ -221,8 +223,13 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
                 )
                 sendMsgThroughSocket(encryptedMessage)
             }
+            binding.input.setText("")
         }
-
+        val layoutManager = LinearLayoutManager(this)
+        layoutManager.reverseLayout = true
+        binding.recyclerMessage.layoutManager = layoutManager
+        val adapter = MessageAdapter(mutableListOf())
+        binding.recyclerMessage.adapter = adapter
         SocketManager.on(SocketManager.EVENTS.NEW_MESSAGE) { data ->
             Log.e(TAG, "NEW_MESSAGE: ")
             val message = gson.fromJson(data[0].toString(), Message::class.java)
@@ -232,6 +239,11 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
                     message.message,
                     Crypto.stringToPrivateKey(stringPK)
                 )
+                message.message = decryptedMessage
+            }
+            runOnUiThread {
+                adapter.addMessage(message) // Assuming `adapter` is your MessageAdapter instance
+                binding.recyclerMessage.smoothScrollToPosition(0)
             }
         }
     }

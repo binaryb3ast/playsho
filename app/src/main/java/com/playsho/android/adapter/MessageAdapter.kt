@@ -1,46 +1,104 @@
 package com.playsho.android.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.playsho.android.R
+import com.playsho.android.data.Message
+import com.playsho.android.databinding.ItemMessageMeBinding
+import com.playsho.android.databinding.ItemMessageSenderBinding
+import com.playsho.android.databinding.ItemMessageSystemBinding
+import com.playsho.android.utils.accountmanager.AccountInstance
 
-class MessageAdapter(private val dataSet: Array<String>) :
-        RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder)
-     */
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val textView: TextView
+class MessageAdapter(private val dataSet: MutableList<Message>) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-        init {
-            // Define click listener for the ViewHolder's View
-            textView = view.findViewById(R.id.textView)
+    companion object {
+        const val SENDER = 2
+        const val SYSTEM = 0
+        const val ME = 1
+    }
+
+    override fun getItemCount(): Int {
+        return dataSet.size
+    }
+
+
+    override fun getItemViewType(position: Int): Int {
+        return if (dataSet[position].type == "system") {
+            SYSTEM
+        } else if (dataSet[position].sender.tag == AccountInstance.getUserData("tag")) {
+            ME
+        } else {
+            SENDER
+        }
+    }
+    // Create new views (invoked by the layout manager)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            SENDER -> {
+                val inflater = LayoutInflater.from(parent.context)
+                val binding = ItemMessageSenderBinding.inflate(inflater, parent, false)
+                SenderViewHolder(binding)
+            }
+            ME -> {
+                val inflater = LayoutInflater.from(parent.context)
+                val binding = ItemMessageMeBinding.inflate(inflater, parent, false)
+                MyselfViewHolder(binding)
+            }
+            else -> {
+                val inflater = LayoutInflater.from(parent.context)
+                val binding = ItemMessageSystemBinding.inflate(inflater, parent, false)
+                SystemViewHolder(binding)
+            }
         }
     }
 
-    // Create new views (invoked by the layout manager)
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        // Create a new view, which defines the UI of the list item
-        val view = LayoutInflater.from(viewGroup.context)
-                .inflate(R.layout.text_row_item, viewGroup, false)
-
-        return ViewHolder(view)
+    fun addMessage(message: Message) {
+        dataSet.add(0, message)
+        notifyItemInserted(0)
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
-    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
-        viewHolder.textView.text = dataSet[position]
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val message = dataSet[position]
+        when (holder) {
+            is SenderViewHolder -> holder.bind(message)
+            is MyselfViewHolder -> holder.bind(message)
+            is SystemViewHolder -> holder.bind(message)
+        }
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount() = dataSet.size
+
+    inner class SenderViewHolder(private val binding: ItemMessageSenderBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(message: Message) {
+            binding.apply {
+                message.also {
+                    txtMessage.text = message.message
+                    txtName.text = message.sender.name
+                }
+            }
+        }
+    }
+
+    inner class SystemViewHolder(private val binding: ItemMessageSystemBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(message: Message) {
+            binding.apply {
+                message.also {
+                    txtMessage.text = message.message
+                }
+            }
+        }
+    }
+
+    inner class MyselfViewHolder(private val binding: ItemMessageMeBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(message: Message) {
+            binding.apply {
+                message.also {
+                     txtMessage.text = message.message
+                }
+            }
+        }
+    }
 
 }
