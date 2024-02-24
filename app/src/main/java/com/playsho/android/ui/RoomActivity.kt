@@ -1,9 +1,6 @@
 package com.playsho.android.ui
 
 import android.annotation.SuppressLint
-import android.media.session.MediaSession
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.core.view.WindowCompat
@@ -16,21 +13,19 @@ import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.PlayerView
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.google.gson.Gson
 import com.playsho.android.R
 import com.playsho.android.adapter.MessageAdapter
-import com.playsho.android.base.ApplicationLoader
 import com.playsho.android.base.BaseActivity
+import com.playsho.android.data.Device
 import com.playsho.android.data.Message
 import com.playsho.android.databinding.ActivityRoomBinding
 import com.playsho.android.network.SocketManager
 import com.playsho.android.utils.Crypto
 import com.playsho.android.utils.ThemeHelper
 import com.playsho.android.utils.accountmanager.AccountInstance
-import kotlin.math.log
+import org.json.JSONArray
 
 class RoomActivity : BaseActivity<ActivityRoomBinding>() {
 
@@ -46,6 +41,8 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
     private var playbackPosition = 0L
     val gson = Gson()
     private var ROOM_TAG = "";
+    private var members = mutableMapOf<String, Device>();
+    private lateinit var messageAdapter: MessageAdapter
     override fun getLayoutResourceId(): Int {
         return R.layout.activity_room
     }
@@ -62,7 +59,6 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
     public override fun onResume() {
         super.onResume()
         hideSystemUi()
-        SocketManager.joinRoom(getIntentStringExtra("tag") ?: "crash_room")
         if (player == null) {
             initializePlayer()
         }
@@ -76,6 +72,11 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
         super.onStop()
         releasePlayer()
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        SocketManager.leaveRoom(ROOM_TAG)
     }
 
     private fun initializePlayer() {
@@ -215,7 +216,7 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
         setStatusBarColor(R.color.black_background, true)
         initUi()
         binding.icSend.setOnClickListener {
-            var stringPK: String = AccountInstance.getAuthToken("public_key") ?: "NOT_SET";
+            val stringPK: String = AccountInstance.getAuthToken("public_key") ?: "NOT_SET";
             if (stringPK != "NOT_SET") {
                 val encryptedMessage = Crypto.encryptMessage(
                     binding.input.text.toString(),
@@ -228,24 +229,71 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
         val layoutManager = LinearLayoutManager(this)
         layoutManager.reverseLayout = true
         binding.recyclerMessage.layoutManager = layoutManager
-        val adapter = MessageAdapter(mutableListOf())
-        binding.recyclerMessage.adapter = adapter
-        SocketManager.on(SocketManager.EVENTS.NEW_MESSAGE) { data ->
-            Log.e(TAG, "NEW_MESSAGE: ")
-            val message = gson.fromJson(data[0].toString(), Message::class.java)
-            var stringPK: String = AccountInstance.getAuthToken("private_key") ?: "NOT_SET";
-            if (stringPK != "NOT_SET") {
+        messageAdapter = MessageAdapter(mutableListOf())
+        binding.recyclerMessage.adapter = messageAdapter
+        SocketManager.on(SocketManager.EVENTS.NEW_MESSAGE, ::handleNewMessage)
+        SocketManager.on(SocketManager.EVENTS.JOINED, ::handleJoinMember)
+        SocketManager.on(SocketManager.EVENTS.LEFT, ::handleMemberLeft)
+        SocketManager.on(
+            SocketManager.EVENTS.TRADE + AccountInstance.getUserData("tag"),
+            ::handleMemberLeft
+        )
+    }
+
+    private fun handleNewMessage(data: Array<Any>) {
+        val message = gson.fromJson(data[0].toString(), Message::class.java)
+        if (message.type != "system") {
+            val privateKey: String = AccountInstance.getAuthToken("private_key") ?: "NOT_SET";
+            if (privateKey != "NOT_SET") {
                 val decryptedMessage = Crypto.decryptMessage(
                     message.message,
-                    Crypto.stringToPrivateKey(stringPK)
+                    Crypto.stringToPrivateKey(privateKey)
                 )
                 message.message = decryptedMessage
             }
-            runOnUiThread {
-                adapter.addMessage(message) // Assuming `adapter` is your MessageAdapter instance
-                binding.recyclerMessage.smoothScrollToPosition(0)
+        }
+
+        runOnUiThread {
+            messageAdapter.addMessage(message) // Assuming `adapter` is your MessageAdapter instance
+            binding.recyclerMessage.smoothScrollToPosition(0)
+        }
+    }
+
+    private fun addMemberLocal(device: Device) {
+        device.tag?.let { tag ->
+            if (!members.containsKey(tag)) {
+                members[tag] = device
             }
         }
+    }
+
+    private fun removeMemberLocal(device: Device) {
+        device.tag?.let { tag ->
+            if (members.containsKey(tag)) {
+                members.remove(tag)
+            }
+        }
+    }
+
+    private fun handleJoinMember(data: Array<Any>) {
+        val message = gson.fromJson(data[0].toString(), Message::class.java)
+        addMemberLocal(message.sender)
+        SocketManager.trade(message.sender.tag ?: "")
+        runOnUiThread {
+            messageAdapter.addMessage(message) // Assuming `adapter` is your MessageAdapter instance
+            binding.recyclerMessage.smoothScrollToPosition(0)
+        }
+        Log.e(TAG, "handleJoinMember: " + members.size)
+    }
+
+    private fun handleMemberLeft(data: Array<Any>) {
+        val message = gson.fromJson(data[0].toString(), Message::class.java)
+        removeMemberLocal(message.sender)
+        runOnUiThread {
+            messageAdapter.addMessage(message) // Assuming `adapter` is your MessageAdapter instance
+            binding.recyclerMessage.smoothScrollToPosition(0)
+        }
+        Log.e(TAG, "handleMemberLeft: " + members.size)
     }
 
     private fun sendMsgThroughSocket(msg: String) {

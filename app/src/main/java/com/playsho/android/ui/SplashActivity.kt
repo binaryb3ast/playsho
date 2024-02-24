@@ -10,10 +10,12 @@ import androidx.lifecycle.lifecycleScope
 import com.playsho.android.R
 import com.playsho.android.base.ApplicationLoader
 import com.playsho.android.base.BaseActivity
+import com.playsho.android.base.BaseBottomSheet
 import com.playsho.android.databinding.ActivitySplashBinding
 import com.playsho.android.network.Agent
 import com.playsho.android.network.Response
 import com.playsho.android.network.SocketManager
+import com.playsho.android.ui.bottomsheet.JoinRoomBottomSheet
 import com.playsho.android.utils.Crypto
 import com.playsho.android.utils.DimensionUtils
 import com.playsho.android.utils.LocalController
@@ -61,6 +63,10 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
             }else{
                 requestGenerateDevice()
             }
+        }
+        binding.btnJoin.setOnClickListener{
+            val bottomSheet = JoinRoomBottomSheet()
+            bottomSheet.show(supportFragmentManager , "join")
         }
     }
 

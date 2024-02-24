@@ -12,7 +12,7 @@
         android:layout_height="wrap_content">
 
         <com.playsho.android.component.Sheet
-            android:text="Add video link"
+            android:text="@string/join_room"
             style="@style/font_h3"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
@@ -25,9 +25,11 @@
             android:textColorHint="@color/neutral_500"
             style="@style/font_subtitle_regular"
             android:maxLines="1"
+            android:paddingEnd="12dp"
+            android:paddingStart="12dp"
             android:id="@+id/input"
             android:textColor="@color/neutral_900"
-            android:hint="Paste or type video link"
+            android:hint="@string/paste_or_type_your_room_code_ex"
             android:layout_marginTop="32dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
@@ -36,7 +38,7 @@
 
 
         <com.playsho.android.component.Sheet
-            android:text="You can add any video link from any website with stream support."
+            android:text="@string/you_can_enter_link"
             style="@style/font_body_regular"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
@@ -50,7 +52,7 @@
             android:layout_marginEnd="20dp"
             android:id="@+id/btn"
             android:layout_marginTop="16dp"
-            android:text="@string/create_a_room"
+            android:text="@string/join"
             android:layout_marginBottom="32dp"
             android:layout_width="match_parent"
             android:layout_height="48dp"/>

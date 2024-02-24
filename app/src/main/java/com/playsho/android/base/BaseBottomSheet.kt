@@ -61,7 +61,6 @@ abstract class BaseBottomSheet<B : ViewDataBinding> : BottomSheetDialogFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
     }
 
     protected fun getSessionStorage(): SessionStorage {

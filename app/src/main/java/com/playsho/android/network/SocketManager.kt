@@ -12,8 +12,11 @@ object SocketManager {
     private var socket: Socket? = null
 
     object EVENTS {
-       const val SEND_MESSAGE =  "room_msg"
-       const val NEW_MESSAGE =  "new_message"
+        const val SEND_MESSAGE = "room_msg"
+        const val NEW_MESSAGE = "new_message"
+        const val JOINED = "joined"
+        const val LEFT = "left"
+        const val TRADE = "trade"
     }
 
     @Synchronized
@@ -29,7 +32,7 @@ object SocketManager {
 
                     }
                     // Create a new socket instance
-                    socket = IO.socket("http://192.168.100.110:7777" , options)
+                    socket = IO.socket("http://192.168.100.110:7777", options)
 
                     socket!!.on(Socket.EVENT_CONNECT) { args ->
                         Log.e(TAG, "EVENT_CONNECT:")
@@ -81,7 +84,7 @@ object SocketManager {
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-        socket?.emit("join", json)
+        socket?.emit("leave", json)
     }
 
     @Synchronized
@@ -100,7 +103,7 @@ object SocketManager {
     }
 
     @Synchronized
-    fun sendMessage(room:String , message:String) {
+    fun sendMessage(room: String, message: String) {
         val json = JSONObject()
         try {
             json.put("room", room)
@@ -108,6 +111,23 @@ object SocketManager {
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-        socket?.emit(EVENTS.SEND_MESSAGE , json)
+        socket?.emit(EVENTS.SEND_MESSAGE, json)
+    }
+
+    @Synchronized
+    fun trade(tag: String) {
+        val json = JSONObject()
+        try {
+            val senderJson = JSONObject()
+            senderJson.put("tag", AccountInstance.getUserData("tag"))
+            senderJson.put("public_key", AccountInstance.getAuthToken("public_key"))
+            val receiverJson = JSONObject()
+            receiverJson.put("tag",tag)
+            json.put("sender", senderJson)
+            json.put("receiver" , receiverJson)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        socket?.emit(EVENTS.TRADE, json)
     }
 }
