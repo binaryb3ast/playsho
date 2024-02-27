@@ -38,6 +38,10 @@ object Agent {
         fun create(): Call<Response> {
             return RetrofitClient.getNetworkConfiguration().createRoom()
         }
+
+        fun get(roomTag: String): Call<Response> {
+            return RetrofitClient.getNetworkConfiguration().getRoom(roomTag);
+        }
     }
 
 

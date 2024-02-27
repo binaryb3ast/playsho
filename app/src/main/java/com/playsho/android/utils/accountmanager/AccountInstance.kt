@@ -101,8 +101,8 @@ object AccountInstance {
      * @param tokenType The type of the authentication token.
      * @return The authentication token.
      */
-    fun getAuthToken(tokenType: String): String? {
-        return currentAccount?.let { accountManager.peekAuthToken(it, tokenType) }
+    fun getAuthToken(tokenType: String): String {
+        return currentAccount.let { accountManager.peekAuthToken(it, tokenType) }
     }
 
     /**

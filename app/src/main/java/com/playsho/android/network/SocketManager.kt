@@ -17,6 +17,7 @@ object SocketManager {
         const val JOINED = "joined"
         const val LEFT = "left"
         const val TRADE = "trade"
+        const val EXCHANGE = "exchange"
     }
 
     @Synchronized

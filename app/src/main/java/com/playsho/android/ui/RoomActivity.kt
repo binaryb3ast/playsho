@@ -21,11 +21,15 @@ import com.playsho.android.base.BaseActivity
 import com.playsho.android.data.Device
 import com.playsho.android.data.Message
 import com.playsho.android.databinding.ActivityRoomBinding
+import com.playsho.android.network.Agent
+import com.playsho.android.network.Response
 import com.playsho.android.network.SocketManager
 import com.playsho.android.utils.Crypto
 import com.playsho.android.utils.ThemeHelper
 import com.playsho.android.utils.accountmanager.AccountInstance
 import org.json.JSONArray
+import retrofit2.Call
+import retrofit2.Callback
 
 class RoomActivity : BaseActivity<ActivityRoomBinding>() {
 
@@ -41,6 +45,7 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
     private var playbackPosition = 0L
     val gson = Gson()
     private var ROOM_TAG = "";
+    private lateinit var ROOM_KEY: String;
     private var members = mutableMapOf<String, Device>();
     private lateinit var messageAdapter: MessageAdapter
     override fun getLayoutResourceId(): Int {
@@ -212,47 +217,63 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ROOM_TAG = getIntentStringExtra("tag") ?: "crash_room"
-        SocketManager.joinRoom(ROOM_TAG)
         setStatusBarColor(R.color.black_background, true)
+        requestGetRoom(ROOM_TAG)
         initUi()
         binding.icSend.setOnClickListener {
-            val stringPK: String = AccountInstance.getAuthToken("public_key") ?: "NOT_SET";
-            if (stringPK != "NOT_SET") {
-                val encryptedMessage = Crypto.encryptMessage(
-                    binding.input.text.toString(),
-                    Crypto.stringToPublicKey(stringPK)
-                )
-                sendMsgThroughSocket(encryptedMessage)
-            }
+            var encryptedMsg = Crypto.encryptAES(binding.input.text.toString() ,ROOM_KEY)
+            sendMsgThroughSocket(encryptedMsg)
             binding.input.setText("")
         }
+        configRecycler()
+    }
+
+    private fun configRecycler() {
         val layoutManager = LinearLayoutManager(this)
         layoutManager.reverseLayout = true
         binding.recyclerMessage.layoutManager = layoutManager
         messageAdapter = MessageAdapter(mutableListOf())
         binding.recyclerMessage.adapter = messageAdapter
-        SocketManager.on(SocketManager.EVENTS.NEW_MESSAGE, ::handleNewMessage)
-        SocketManager.on(SocketManager.EVENTS.JOINED, ::handleJoinMember)
-        SocketManager.on(SocketManager.EVENTS.LEFT, ::handleMemberLeft)
-        SocketManager.on(
-            SocketManager.EVENTS.TRADE + AccountInstance.getUserData("tag"),
-            ::handleMemberLeft
-        )
+    }
+
+    private fun requestGetRoom(roomTag: String) {
+        Agent.Room.get(roomTag).enqueue(object : Callback<Response> {
+
+            override fun onFailure(call: Call<Response>, t: Throwable) {
+
+            }
+
+            override fun onResponse(
+                call: Call<Response>,
+                response: retrofit2.Response<Response>
+            ) {
+                if (response.isSuccessful) {
+                    response.body()?.result?.room?.tag?.let {
+                        SocketManager.joinRoom(it)
+                        SocketManager.on(SocketManager.EVENTS.NEW_MESSAGE, ::handleNewMessage)
+                        SocketManager.on(SocketManager.EVENTS.JOINED, ::handleJoinMember)
+                        SocketManager.on(SocketManager.EVENTS.LEFT, ::handleMemberLeft)
+                        SocketManager.on(SocketManager.EVENTS.EXCHANGE, ::handleExchange)
+                    }
+
+                    response.body()?.result?.room?.roomKey?.let {
+                        ROOM_KEY = Crypto.decryptMessage(
+                            it,
+                            Crypto.stringToPrivateKey(AccountInstance.getAuthToken("private_key"))
+                        )
+                    }
+                }
+
+            }
+        })
     }
 
     private fun handleNewMessage(data: Array<Any>) {
+        Log.e(TAG, "handleNewMessage: " )
         val message = gson.fromJson(data[0].toString(), Message::class.java)
         if (message.type != "system") {
-            val privateKey: String = AccountInstance.getAuthToken("private_key") ?: "NOT_SET";
-            if (privateKey != "NOT_SET") {
-                val decryptedMessage = Crypto.decryptMessage(
-                    message.message,
-                    Crypto.stringToPrivateKey(privateKey)
-                )
-                message.message = decryptedMessage
-            }
+            message.message = Crypto.decryptAES(message.message,ROOM_KEY)
         }
-
         runOnUiThread {
             messageAdapter.addMessage(message) // Assuming `adapter` is your MessageAdapter instance
             binding.recyclerMessage.smoothScrollToPosition(0)
@@ -284,6 +305,21 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
             binding.recyclerMessage.smoothScrollToPosition(0)
         }
         Log.e(TAG, "handleJoinMember: " + members.size)
+    }
+
+    private fun handleExchange(data: Array<Any>) {
+        val message = gson.fromJson(data[0].toString(), Message::class.java)
+        message.sender.tag?.let { tag ->
+            // Retrieve the device from the members map
+            val device = members[tag]
+            // Update the device's publicKey if it exists
+            device?.publicKey = message.sender.publicKey
+            // Update the device in the members map
+            device?.let {
+                members[tag] = it
+            }
+        }
+        Log.e(TAG, "handleExchange: " + members.size)
     }
 
     private fun handleMemberLeft(data: Array<Any>) {

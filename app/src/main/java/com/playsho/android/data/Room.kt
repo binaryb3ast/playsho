@@ -8,6 +8,18 @@ data class Room(
     @Expose
     val tag: String? = "",
 
+    @SerializedName("stream_link")
+    @Expose
+    val streamLink: String? = "",
+
+    @SerializedName("status")
+    @Expose
+    val status: String? = "",
+
+    @SerializedName("room_key")
+    @Expose
+    val roomKey: String? = "",
+
 ) {
 
     override fun equals(other: Any?): Boolean {

@@ -62,7 +62,7 @@ data class Device(
 
     @SerializedName("public_key")
     @Expose
-    val publicKey: String? = ""
+    var publicKey: String? = ""
 ) {
 
     override fun equals(other: Any?): Boolean {
