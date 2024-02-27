@@ -42,7 +42,7 @@ data class Device(
 
     @SerializedName("user_name")
     @Expose
-    val userName: String? = "",
+    val userName: String? = "unknown" ,
 
     @SerializedName("app_version_name")
     @Expose

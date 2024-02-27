@@ -33,7 +33,7 @@ object SocketManager {
 
                     }
                     // Create a new socket instance
-                    socket = IO.socket("http://192.168.100.110:7777", options)
+                    socket = IO.socket(RetrofitClient.getSocketBaseUrl(), options)
 
                     socket!!.on(Socket.EVENT_CONNECT) { args ->
                         Log.e(TAG, "EVENT_CONNECT:")

@@ -57,7 +57,7 @@ object Crypto {
     }
 
     fun stringToPrivateKey(privateKeyStr: String): PrivateKey {
-        val privateKeyBytes = Base64.decode(privateKeyStr, Base64.DEFAULT)
+        val privateKeyBytes = Base64.decode(privateKeyStr, Base64.NO_PADDING or Base64.NO_WRAP)
         val keyFactory = KeyFactory.getInstance(RSA_KEY_ALGORITHM)
         val privateKeySpec = PKCS8EncodedKeySpec(privateKeyBytes)
         return keyFactory.generatePrivate(privateKeySpec)

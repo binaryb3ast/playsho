@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
@@ -56,6 +57,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
            requestGenerateDevice()
         }
 
+
         binding.btn.setOnClickListener {
             binding.btn.startProgress()
             if (AccountInstance.hasAnyAccount()){
@@ -72,6 +74,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
 
     private fun requestGenerateDevice(){
         binding.txtName.text = "Loading..."
+
 
         val keyPair = Crypto.generateRSAKeyPair()
         // Convert public key to string
@@ -90,7 +93,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
                 response: retrofit2.Response<Response>
             ) {
                 val account = AccountInstance.createAccount(
-                    response.body()?.result?.device?.userName ?: "", "", Bundle().apply {
+                    response.body()?.result?.device?.userName ?: "unknown", "", Bundle().apply {
                         putString(
                             "user_name",
                             response.body()?.result?.device?.userName ?: "NO NAME"

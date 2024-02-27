@@ -18,6 +18,7 @@ object RetrofitClient {
     private const val REQUEST_READ_TIME_OUT = 15L
     private const val REQUEST_CONNECT_TIME_OUT = 15L
     private const val BASE_URL_TEST = "http://192.168.100.110:3000/"
+    private const val BASE_URL_NGROK = "https://b1c2-151-240-80-227.ngrok-free.app"
     private const val SOCKET_URL_TEST = "http://192.168.100.110:7777"
     private const val BASE_URL = "https://d.digilog.pro/"
 
@@ -38,7 +39,7 @@ object RetrofitClient {
 
     private fun buildRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL_TEST)
+            .baseUrl(BASE_URL_NGROK)
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .client(getHttpClient())
@@ -50,7 +51,7 @@ object RetrofitClient {
     }
 
     fun getSocketBaseUrl(): String {
-        return SOCKET_URL_TEST
+        return BASE_URL_NGROK
     }
 
     private fun getHttpClient(): OkHttpClient {
