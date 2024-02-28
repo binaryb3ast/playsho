@@ -39,7 +39,7 @@ object RetrofitClient {
 
     private fun buildRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL_NGROK)
+            .baseUrl(getBaseUrl())
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .client(getHttpClient())
@@ -51,7 +51,7 @@ object RetrofitClient {
     }
 
     fun getSocketBaseUrl(): String {
-        return BASE_URL_NGROK
+        return SOCKET_URL_TEST
     }
 
     private fun getHttpClient(): OkHttpClient {

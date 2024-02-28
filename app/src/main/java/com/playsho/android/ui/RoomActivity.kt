@@ -255,12 +255,18 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
                         SocketManager.on(SocketManager.EVENTS.LEFT, ::handleMemberLeft)
                         SocketManager.on(SocketManager.EVENTS.EXCHANGE, ::handleExchange)
                     }
-
+                    Log.e(TAG, "roomKey: " + response.body()?.result?.room?.roomKey )
                     response.body()?.result?.room?.roomKey?.let {
-                        ROOM_KEY = Crypto.decryptMessage(
-                            it,
-                            Crypto.stringToPrivateKey(AccountInstance.getAuthToken("private_key"))
-                        )
+                        Log.e(TAG, "it: $it")
+                        Log.e(TAG, "AccountInstance.getAuthToken: " + AccountInstance.getAuthToken("private_key"))
+                        var pv = Crypto.getPrivateKeyFromString(AccountInstance.getAuthToken("private_key"))
+                        runOnUiThread {
+                            ROOM_KEY = Crypto.decryptMessage(
+                                it,
+                                pv
+                            )
+                        }
+
                     }
                 }
 

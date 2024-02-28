@@ -78,9 +78,9 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
 
         val keyPair = Crypto.generateRSAKeyPair()
         // Convert public key to string
-        val publicKeyString = Crypto.publicKeyToString(keyPair.public)
+        val publicKeyString = Crypto.publicKeyToPEM(keyPair.public)
         // Convert private key to string
-        val privateKeyString = Crypto.privateKeyToString(keyPair.private)
+        val privateKeyString = Crypto.privateKeyToPEM(keyPair.private)
         Agent.Device.generate(publicKeyString).enqueue(object : Callback<Response> {
 
             override fun onFailure(call: Call<Response>, t: Throwable) {

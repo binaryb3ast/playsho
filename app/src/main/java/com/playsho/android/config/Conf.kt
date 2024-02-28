@@ -21,7 +21,7 @@ object Conf {
         const val LAST_UPDATE_TIME = "last_update_at"
         const val FIRST_INSTALL_TIME = "first_install_at"
         const val MANUFACTURER = "manufacturer"
-        const val MODEL = "model"
+        const val MODEL = "device_model"
         const val BRAND = "brand"
         const val FCM = "fcm"
         const val SECRET = "secret"
