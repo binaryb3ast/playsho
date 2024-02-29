@@ -2,6 +2,7 @@ package com.playsho.android.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -20,17 +21,22 @@ import com.playsho.android.ui.bottomsheet.JoinRoomBottomSheet
 import com.playsho.android.utils.Crypto
 import com.playsho.android.utils.DimensionUtils
 import com.playsho.android.utils.LocalController
+import com.playsho.android.utils.RSAHelper
 import com.playsho.android.utils.accountmanager.AccountInstance
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
+import java.security.KeyPair
 
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : BaseActivity<ActivitySplashBinding>() {
 
     private val SIDE_MARGIN: Int = 140
+    private lateinit var keyPairMap: KeyPair
+    private var encryptedText = ""
+
     override fun getLayoutResourceId(): Int {
         return R.layout.activity_splash;
     }
@@ -43,6 +49,11 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
         super.onCreate(savedInstanceState)
         setStatusBarColor(R.color.black_background, true)
         setupLogoWidth()
+        keyPairMap = RSAHelper.generateKeyPair()
+        Log.e("PUBLICKEY", "${RSAHelper.printPublicKey(keyPairMap)}")
+        encryptedText = RSAHelper.encrypt("test" ,RSAHelper.printPublicKey(keyPairMap) )
+        var dec = RSAHelper.decrypt(encryptedText , keyPairMap.private)
+        Log.e( "PUBLICKEY","${dec}" )
         binding.txtDescription.typeWrite(
             this,
             LocalController.getString(R.string.splash_description),
@@ -74,6 +85,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
 
     private fun requestGenerateDevice(){
         binding.txtName.text = "Loading..."
+
 
 
         val keyPair = Crypto.generateRSAKeyPair()

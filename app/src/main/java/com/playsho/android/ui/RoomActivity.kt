@@ -257,13 +257,10 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
                     }
                     Log.e(TAG, "roomKey: " + response.body()?.result?.room?.roomKey )
                     response.body()?.result?.room?.roomKey?.let {
-                        Log.e(TAG, "it: $it")
-                        Log.e(TAG, "AccountInstance.getAuthToken: " + AccountInstance.getAuthToken("private_key"))
-                        var pv = Crypto.getPrivateKeyFromString(AccountInstance.getAuthToken("private_key"))
                         runOnUiThread {
                             ROOM_KEY = Crypto.decryptMessage(
                                 it,
-                                pv
+                                Crypto.getPrivateKeyFromString(AccountInstance.getAuthToken("private_key"))
                             )
                         }
 
