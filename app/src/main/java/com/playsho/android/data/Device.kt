@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class Device(
+
     @SerializedName("tag")
     @Expose
     val tag: String? = "",
@@ -11,6 +12,10 @@ data class Device(
     @SerializedName("name")
     @Expose
     val name: String? = "",
+
+    @SerializedName("color")
+    @Expose
+    var color: String? = "#f46c7d",
 
     @SerializedName("brand")
     @Expose

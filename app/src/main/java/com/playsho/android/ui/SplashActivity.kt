@@ -50,10 +50,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
         setStatusBarColor(R.color.black_background, true)
         setupLogoWidth()
         keyPairMap = RSAHelper.generateKeyPair()
-        Log.e("PUBLICKEY", "${RSAHelper.printPublicKey(keyPairMap)}")
-        encryptedText = RSAHelper.encrypt("test" ,RSAHelper.printPublicKey(keyPairMap) )
-        var dec = RSAHelper.decrypt(encryptedText , keyPairMap.private)
-        Log.e( "PUBLICKEY","${dec}" )
+
         binding.txtDescription.typeWrite(
             this,
             LocalController.getString(R.string.splash_description),
@@ -86,14 +83,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
     private fun requestGenerateDevice(){
         binding.txtName.text = "Loading..."
 
-
-
-        val keyPair = Crypto.generateRSAKeyPair()
-        // Convert public key to string
-        val publicKeyString = Crypto.publicKeyToPEM(keyPair.public)
-        // Convert private key to string
-        val privateKeyString = Crypto.privateKeyToPEM(keyPair.private)
-        Agent.Device.generate(publicKeyString).enqueue(object : Callback<Response> {
+        Agent.Device.generate(RSAHelper.printPublicKey(keyPairMap)).enqueue(object : Callback<Response> {
 
             override fun onFailure(call: Call<Response>, t: Throwable) {
                 binding.txtName.text = "Error !"
@@ -122,8 +112,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
                         it
                     )
                 }
-                AccountInstance.setAuthToken(account, "private_key", privateKeyString)
-                AccountInstance.setAuthToken(account, "public_key", publicKeyString)
                 SocketManager.initialize().establish()
             }
         })

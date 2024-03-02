@@ -1,6 +1,7 @@
 package com.playsho.android.adapter
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -75,7 +76,8 @@ class MessageAdapter(private val dataSet: MutableList<Message>) :
             binding.apply {
                 message.also {
                     txtMessage.text = message.message
-                    txtName.text = message.sender.name
+                    txtName.text = message.sender.userName
+                    txtName.setTextColor(Color.parseColor(message.sender.color))
                 }
             }
         }

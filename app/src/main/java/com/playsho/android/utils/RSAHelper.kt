@@ -86,7 +86,11 @@ object RSAHelper {
 
     /*** Prints Public Key String ***/
     fun printPublicKey(keyPairMap: KeyPair): String {
-        return String(Base64.encode(keyPairMap.public.encoded, Base64.DEFAULT))
+        val pemFormat = StringBuilder()
+        pemFormat.append("-----BEGIN PUBLIC KEY-----\n")
+        pemFormat.append(String(Base64.encode(keyPairMap.public.encoded, Base64.DEFAULT)))
+        pemFormat.append("-----END PUBLIC KEY-----")
+        return pemFormat.toString()
     }
 
     /*** Converts String Public Key to PublicKey Object ***/

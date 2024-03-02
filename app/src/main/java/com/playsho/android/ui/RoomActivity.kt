@@ -25,11 +25,13 @@ import com.playsho.android.network.Agent
 import com.playsho.android.network.Response
 import com.playsho.android.network.SocketManager
 import com.playsho.android.utils.Crypto
+import com.playsho.android.utils.RSAHelper
 import com.playsho.android.utils.ThemeHelper
 import com.playsho.android.utils.accountmanager.AccountInstance
 import org.json.JSONArray
 import retrofit2.Call
 import retrofit2.Callback
+import java.security.KeyPair
 
 class RoomActivity : BaseActivity<ActivityRoomBinding>() {
 
@@ -39,7 +41,7 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
 
     private val playbackStateListener: Player.Listener = playbackStateListener()
     private var player: Player? = null
-
+    private lateinit var keyPairMap: KeyPair
     private var playWhenReady = true
     private var mediaItemIndex = 0
     private var playbackPosition = 0L
@@ -216,6 +218,8 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        keyPairMap = RSAHelper.generateKeyPair()
+
         ROOM_TAG = getIntentStringExtra("tag") ?: "crash_room"
         setStatusBarColor(R.color.black_background, true)
         requestGetRoom(ROOM_TAG)
@@ -239,9 +243,7 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
     private fun requestGetRoom(roomTag: String) {
         Agent.Room.get(roomTag).enqueue(object : Callback<Response> {
 
-            override fun onFailure(call: Call<Response>, t: Throwable) {
-
-            }
+            override fun onFailure(call: Call<Response>, t: Throwable) {}
 
             override fun onResponse(
                 call: Call<Response>,
@@ -253,15 +255,10 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
                         SocketManager.on(SocketManager.EVENTS.NEW_MESSAGE, ::handleNewMessage)
                         SocketManager.on(SocketManager.EVENTS.JOINED, ::handleJoinMember)
                         SocketManager.on(SocketManager.EVENTS.LEFT, ::handleMemberLeft)
-                        SocketManager.on(SocketManager.EVENTS.EXCHANGE, ::handleExchange)
                     }
-                    Log.e(TAG, "roomKey: " + response.body()?.result?.room?.roomKey )
                     response.body()?.result?.room?.roomKey?.let {
                         runOnUiThread {
-                            ROOM_KEY = Crypto.decryptMessage(
-                                it,
-                                Crypto.getPrivateKeyFromString(AccountInstance.getAuthToken("private_key"))
-                            )
+                            ROOM_KEY = RSAHelper.decrypt(it,keyPairMap.private)
                         }
 
                     }
@@ -272,10 +269,12 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
     }
 
     private fun handleNewMessage(data: Array<Any>) {
-        Log.e(TAG, "handleNewMessage: " )
         val message = gson.fromJson(data[0].toString(), Message::class.java)
+        addMemberLocal(message.sender)
         if (message.type != "system") {
             message.message = Crypto.decryptAES(message.message,ROOM_KEY)
+        }else{
+            message.sender.color = members[message.sender.tag]?.color
         }
         runOnUiThread {
             messageAdapter.addMessage(message) // Assuming `adapter` is your MessageAdapter instance
@@ -284,6 +283,9 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
     }
 
     private fun addMemberLocal(device: Device) {
+        val colorArray = listOf("#f46c7d", "#be6cf4", "#6c77f4", "#6cf46e", "#6c77f4", "#6c77f4")
+        val randomIndex = (Math.random() * colorArray.size).toInt()
+        device.color = colorArray[randomIndex]
         device.tag?.let { tag ->
             if (!members.containsKey(tag)) {
                 members[tag] = device
@@ -302,29 +304,12 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
     private fun handleJoinMember(data: Array<Any>) {
         val message = gson.fromJson(data[0].toString(), Message::class.java)
         addMemberLocal(message.sender)
-        SocketManager.trade(message.sender.tag ?: "")
         runOnUiThread {
             messageAdapter.addMessage(message) // Assuming `adapter` is your MessageAdapter instance
             binding.recyclerMessage.smoothScrollToPosition(0)
         }
         Log.e(TAG, "handleJoinMember: " + members.size)
     }
-
-    private fun handleExchange(data: Array<Any>) {
-        val message = gson.fromJson(data[0].toString(), Message::class.java)
-        message.sender.tag?.let { tag ->
-            // Retrieve the device from the members map
-            val device = members[tag]
-            // Update the device's publicKey if it exists
-            device?.publicKey = message.sender.publicKey
-            // Update the device in the members map
-            device?.let {
-                members[tag] = it
-            }
-        }
-        Log.e(TAG, "handleExchange: " + members.size)
-    }
-
     private fun handleMemberLeft(data: Array<Any>) {
         val message = gson.fromJson(data[0].toString(), Message::class.java)
         removeMemberLocal(message.sender)
