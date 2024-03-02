@@ -27,8 +27,6 @@ import com.playsho.android.network.SocketManager
 import com.playsho.android.utils.Crypto
 import com.playsho.android.utils.RSAHelper
 import com.playsho.android.utils.ThemeHelper
-import com.playsho.android.utils.accountmanager.AccountInstance
-import org.json.JSONArray
 import retrofit2.Call
 import retrofit2.Callback
 import java.security.KeyPair
@@ -46,9 +44,9 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
     private var mediaItemIndex = 0
     private var playbackPosition = 0L
     val gson = Gson()
-    private var ROOM_TAG = "";
-    private lateinit var ROOM_KEY: String;
-    private var members = mutableMapOf<String, Device>();
+    private var ROOM_TAG = ""
+    private lateinit var ROOM_KEY: String
+    private var members = mutableMapOf<String, Device>()
     private lateinit var messageAdapter: MessageAdapter
     override fun getLayoutResourceId(): Int {
         return R.layout.activity_room
@@ -225,7 +223,7 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
         requestGetRoom(ROOM_TAG)
         initUi()
         binding.icSend.setOnClickListener {
-            var encryptedMsg = Crypto.encryptAES(binding.input.text.toString() ,ROOM_KEY)
+            val encryptedMsg = Crypto.encryptAES(binding.input.text.toString() ,ROOM_KEY)
             sendMsgThroughSocket(encryptedMsg)
             binding.input.setText("")
         }
