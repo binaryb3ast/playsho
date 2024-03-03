@@ -21,4 +21,10 @@
     <string name="paste_or_type_your_room_code_ex">Paste or type your room code ex: S2l1Wsd</string>
     <string name="you_can_enter_link">You can enter link and the input paste only code part.</string>
     <string name="join">Join</string>
+    <string name="settings">Settings</string>
+    <string name="account">Account</string>
+    <string name="your_end_to_end_encryption_key">Your end-to-end encryption key</string>
+    <string name="regenerate_keys">Regenerate Keys</string>
+    <string name="sign_out">Sign out</string>
+    <string name="sign_out_from_your_account_and_register_again">Sign out from your account and register again</string>
 </resources>

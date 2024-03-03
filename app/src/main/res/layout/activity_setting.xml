@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_background"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.playsho.android.component.Icon
+                android:id="@+id/ic_back"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="12dp"
+                android:src="@drawable/ic_action_left_light"
+                app:color="@color/icon_white" />
+
+            <com.playsho.android.component.Sheet
+                style="@style/font_h4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings"
+                android:textColor="@color/neutral_900" />
+
+        </LinearLayout>
+
+        <com.playsho.android.component.Sheet
+            style="@style/font_h5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/account"
+            android:textColor="@color/secondary" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.playsho.android.component.Sheet
+                android:id="@+id/txt_user_name"
+                style="@style/font_subtitle_strong"
+                android:layout_width="match_parent"
+                android:layout_toStartOf="@id/ic_edit_name"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="12dp"
+                android:textColor="@color/neutral_900" />
+
+            <com.playsho.android.component.Sheet
+                android:id="@+id/txt_tag"
+                android:layout_toStartOf="@id/ic_edit_name"
+                style="@style/font_subtitle_regular"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txt_user_name"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="12dp"
+                android:textColor="@color/neutral_500" />
+
+            <com.playsho.android.component.Icon
+                android:layout_width="24dp"
+                android:id="@+id/ic_edit_name"
+                app:color="@color/icon_low_emphasis"
+                android:layout_marginEnd="20dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/ic_action_edit"
+                android:layout_height="24dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/txt_tag"
+                android:layout_marginStart="20dp"
+                android:background="@color/neutral_700" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.playsho.android.component.Sheet
+                android:id="@+id/txt_encrypt"
+                style="@style/font_subtitle_strong"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="12dp"
+                android:text="@string/regenerate_keys"
+                android:textColor="@color/neutral_900" />
+
+            <com.playsho.android.component.Sheet
+                android:id="@+id/txt_enc_desc"
+                style="@style/font_subtitle_regular"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txt_encrypt"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="12dp"
+                android:text="@string/your_end_to_end_encryption_key"
+                android:textColor="@color/neutral_500" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/txt_enc_desc"
+                android:layout_marginStart="20dp"
+                android:background="@color/neutral_700" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.playsho.android.component.Sheet
+                android:id="@+id/txt_sign_out"
+                style="@style/font_subtitle_strong"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="12dp"
+                android:text="@string/sign_out"
+                android:textColor="@color/neutral_900" />
+
+            <com.playsho.android.component.Sheet
+                android:id="@+id/txt_sign_out_desc"
+                style="@style/font_subtitle_regular"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txt_sign_out"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="12dp"
+                android:text="@string/sign_out_from_your_account_and_register_again"
+                android:textColor="@color/neutral_500" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:layout_below="@id/txt_sign_out_desc"
+                android:background="@color/neutral_700" />
+        </RelativeLayout>
+
+    </LinearLayout>
+</layout>

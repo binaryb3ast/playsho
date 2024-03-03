@@ -64,7 +64,9 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
         } else {
            requestGenerateDevice()
         }
-
+        binding.icSetting.setOnClickListener {
+            openActivity<SettingActivity>()
+        }
 
         binding.btn.setOnClickListener {
             binding.btn.startProgress()

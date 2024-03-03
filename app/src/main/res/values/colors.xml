@@ -6,6 +6,7 @@
     <color name="neutral_500">#81858B</color>
     <color name="icon_white">#FFFFFF</color>
     <color name="icon_secondary">#0FABC6</color>
+    <color name="secondary">#0FABC6</color>
     <color name="icon_disable">#E0E0E2</color>
     <color name="icon_low_emphasis">#767981</color>
     <color name="button_primary">#254FC3</color>
@@ -17,4 +18,5 @@
     <color name="neutral_100">#323641</color>
     <color name="neutral_000">#1E222A</color>
     <color name="bubble_blue">#254FC3</color>
+    <color name="neutral_700">#424750</color>
 </resources>
