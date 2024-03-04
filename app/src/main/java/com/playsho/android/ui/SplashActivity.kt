@@ -41,6 +41,10 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
         return R.layout.activity_splash;
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.txtName.text = "Logged in as  ${AccountInstance.getUserData("user_name")}."
+    }
     override fun onBackPress() {
         TODO("Not yet implemented")
     }
@@ -58,7 +62,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
 
         if (AccountInstance.hasAnyAccount()) {
             AccountInstance.use(AccountInstance.getAccounts()[0])
-            binding.txtName.text = "Logged in as  ${AccountInstance.getUserData("user_name")}. Enjoy your experience!"
+            binding.txtName.text = "Logged in as  ${AccountInstance.getUserData("user_name")}."
             SocketManager.initialize().establish()
         } else {
            requestGenerateDevice()
@@ -84,7 +88,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
     private fun requestGenerateDevice(){
         binding.txtName.text = "Loading..."
         keyPairMap = RSAHelper.generateKeyPair()
-
         Agent.Device.generate(RSAHelper.printPublicKey(keyPairMap)).enqueue(object : Callback<Response> {
 
             override fun onFailure(call: Call<Response>, t: Throwable) {
