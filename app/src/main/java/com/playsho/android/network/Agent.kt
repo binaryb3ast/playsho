@@ -5,7 +5,7 @@ import com.playsho.android.utils.DeviceUtils
 import okhttp3.FormBody
 import okhttp3.RequestBody
 import retrofit2.Call
-import java.util.Objects
+import java.security.PublicKey
 
 
 object Agent {
@@ -32,6 +32,13 @@ object Agent {
             return RetrofitClient.getNetworkConfiguration().generateDevice(body)
         }
 
+        fun regenerateKeypair(publicKey: String): Call<Response> {
+            val builder = FormBody.Builder().apply {
+                add(Conf.Query.PUBLIC_KEY, publicKey)
+            }
+            val body: RequestBody = builder.build()
+            return RetrofitClient.getNetworkConfiguration().regenerateDeviceKeypair(body)
+        }
     }
 
     object Room {

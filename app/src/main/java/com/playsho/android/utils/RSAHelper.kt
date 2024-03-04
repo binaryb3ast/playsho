@@ -7,7 +7,6 @@ import java.nio.charset.StandardCharsets
 import java.security.KeyFactory
 import java.security.KeyPair
 import java.security.KeyPairGenerator
-import java.security.KeyStore
 import java.security.NoSuchAlgorithmException
 import java.security.PrivateKey
 import java.security.PublicKey
@@ -17,36 +16,36 @@ import java.security.spec.X509EncodedKeySpec
 import javax.crypto.Cipher
 
 object RSAHelper {
-    private const val KEY_ALIAS = "my_rsa_key"
     private const val CRYPTO_METHOD = "RSA"
-    private const val KEY_PROVIDER = "AndroidKeyStore"
 
     fun generateKeyPair(): KeyPair {
-        // Check if the RSA key pair already exists
-        val keyStore = KeyStore.getInstance(KEY_PROVIDER)
-        keyStore.load(null)
-        if (!keyStore.containsAlias(KEY_ALIAS)) {
+        val keyPairGenerator = KeyPairGenerator.getInstance(CRYPTO_METHOD, KeyStoreHelper.KEY_PROVIDER)
+        val spec = KeyGenParameterSpec.Builder(
+            KeyStoreHelper.KeyAllies.RSA_KEYS,
+            KeyProperties.PURPOSE_SIGN
+                    or KeyProperties.PURPOSE_VERIFY
+                    or KeyProperties.PURPOSE_ENCRYPT
+                    or KeyProperties.PURPOSE_DECRYPT
+        )
+            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
+            .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
+            .setDigests(KeyProperties.DIGEST_SHA256)
+            .setKeySize(2048)
+            .build()
+        keyPairGenerator.initialize(spec)
+        return keyPairGenerator.generateKeyPair()
+    }
+
+    fun getKeyPairs(): KeyPair {
+
+        return if (!KeyStoreHelper.containsAlias(KeyStoreHelper.KeyAllies.RSA_KEYS)) {
             // Generate a new RSA key pair
-            val keyPairGenerator = KeyPairGenerator.getInstance(CRYPTO_METHOD, KEY_PROVIDER)
-            val spec = KeyGenParameterSpec.Builder(
-                    KEY_ALIAS,
-                KeyProperties.PURPOSE_SIGN
-                        or KeyProperties.PURPOSE_VERIFY
-                        or KeyProperties.PURPOSE_ENCRYPT
-                        or KeyProperties.PURPOSE_DECRYPT
-                )
-                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
-                .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
-                .setDigests(KeyProperties.DIGEST_SHA256)
-                .setKeySize(2048)
-                .build()
-            keyPairGenerator.initialize(spec)
-            return keyPairGenerator.generateKeyPair()
+            generateKeyPair()
         } else {
             // Load the existing RSA key pair
-            val privateKey = keyStore.getKey(KEY_ALIAS, null) as PrivateKey
-            val publicKey = keyStore.getCertificate(KEY_ALIAS).publicKey
-            return KeyPair(publicKey, privateKey)
+            val privateKey:PrivateKey = KeyStoreHelper.getKey(KeyStoreHelper.KeyAllies.RSA_KEYS)
+            val publicKey:PublicKey = KeyStoreHelper.getKey(KeyStoreHelper.KeyAllies.RSA_KEYS)
+            KeyPair(publicKey, privateKey)
         }
     }
 

@@ -46,6 +46,7 @@
             android:textColor="@color/secondary" />
 
         <RelativeLayout
+            android:id="@+id/container_change_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -91,6 +92,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/container_generate_keys"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 

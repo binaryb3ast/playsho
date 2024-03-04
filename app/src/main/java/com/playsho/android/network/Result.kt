@@ -7,6 +7,8 @@ import com.playsho.android.data.Room
 
 data class Result(
 
+
+
     @SerializedName("device")
     @Expose
     val device: Device,

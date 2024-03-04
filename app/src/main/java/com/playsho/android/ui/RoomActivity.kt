@@ -216,7 +216,7 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        keyPairMap = RSAHelper.generateKeyPair()
+        keyPairMap = RSAHelper.getKeyPairs()
 
         ROOM_TAG = getIntentStringExtra("tag") ?: "crash_room"
         setStatusBarColor(R.color.black_background, true)

@@ -9,17 +9,17 @@
     <string name="add_video_url_input_hint">Paste or type video link</string>
     <string name="add_video_url_description">You can add any video link from any website with stream support.</string>
     <string name="add_video_url_btn">Add and Play!</string>
-    <string name="tutorial">1- Create a room without signup!\n2- Add video link\n3- Add friends\n4- Watch together and enjoy! :)</string>
+    <string name="tutorial">1- Create a room without any hassle!\n2- Drop in a video link like a pro!\n3- Bring your buddies onboard!\n4- Sit back, relax, and enjoy the show! 🍿✨ :)</string>
     <string name="slogan">Play and watch togather</string>
     <string name="create_a_room">Create a room</string>
-    <string name="splash_description">1- Create a room without signup!\n2- Add video link\n3- Add friends\n4- Watch together and enjoy! :)</string>
+    <string name="splash_description">1- Create a room without any hassle!\n2- Drop in a video link like a pro!\n3- Bring your buddies onboard!\n4- Sit back, relax, and enjoy the show! 🍿✨ :)</string>
     <string name="add_friends">+ Add friends</string>
     <string name="add_stream_link_to_play">+ Add stream link to play</string>
     <string name="type_a_message_or_link">Type a message or link</string>
     <string name="loading">Loading...</string>
     <string name="join_room">Join Room</string>
-    <string name="paste_or_type_your_room_code_ex">Paste or type your room code ex: S2l1Wsd</string>
-    <string name="you_can_enter_link">You can enter link and the input paste only code part.</string>
+    <string name="paste_or_type_your_room_code_ex">Room code: Paste or type it here! 🍿</string>
+    <string name="you_can_enter_link">You\'re just one step away from joining the fun. Simply paste or type your room code into the box below. Need help finding it? Look for the unique combination of letters and numbers in your invite link, then enter only the code part here. Let\'s dive into the movie magic together!</string>
     <string name="join">Join</string>
     <string name="settings">Settings</string>
     <string name="account">Account</string>
@@ -27,4 +27,10 @@
     <string name="regenerate_keys">Regenerate Keys</string>
     <string name="sign_out">Sign out</string>
     <string name="sign_out_from_your_account_and_register_again">Sign out from your account and register again</string>
+    <string name="rsa_key_pair_successfully_regenerated">🔑 RSA key pair successfully regenerated! 🎉</string>
+    <string name="rsa_key_pair_fail_regenerated">🔑 Oh no! Something went wrong while regenerating the RSA key pair. 🤯 Please try again later and we\'ll get it sorted out! 🛠️</string>
+    <string name="enter_your_name_e_g_john_doe">Enter your name (e.g., John Doe)</string>
+    <string name="we_d_love_to_get_to_know_you_better">We\'d love to get to know you better. 😊</string>
+    <string name="save">Save</string>
+    <string name="hey_there_want_to_level_up_your_experience_with_us">Hey there! Want to level up your experience with us? Throw in your full name! We promise to sprinkle some magic and make your time with us as awesome as a unicorn\'s birthday party! 🦄✨</string>
 </resources>

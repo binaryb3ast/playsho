@@ -12,10 +12,9 @@
         android:layout_height="wrap_content">
 
         <com.playsho.android.component.Sheet
-            android:text="@string/join_room"
-            style="@style/font_h3"
+            android:text="@string/we_d_love_to_get_to_know_you_better"
+            style="@style/font_h4"
             android:layout_marginStart="20dp"
-            android:id="@+id/txt_title"
             android:layout_marginEnd="20dp"
             android:layout_marginTop="32dp"
             android:textColor="@color/neutral_900"
@@ -30,7 +29,7 @@
             android:paddingStart="12dp"
             android:id="@+id/input"
             android:textColor="@color/neutral_900"
-            android:hint="@string/paste_or_type_your_room_code_ex"
+            android:hint="@string/enter_your_name_e_g_john_doe"
             android:layout_marginTop="32dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
@@ -39,7 +38,7 @@
 
 
         <com.playsho.android.component.Sheet
-            android:text="@string/you_can_enter_link"
+            android:text="@string/hey_there_want_to_level_up_your_experience_with_us"
             style="@style/font_body_regular"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
@@ -53,7 +52,7 @@
             android:layout_marginEnd="20dp"
             android:id="@+id/btn"
             android:layout_marginTop="16dp"
-            android:text="@string/join"
+            android:text="@string/save"
             android:layout_marginBottom="32dp"
             android:layout_width="match_parent"
             android:layout_height="48dp"/>
