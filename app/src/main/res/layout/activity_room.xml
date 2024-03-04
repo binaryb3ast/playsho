@@ -71,13 +71,13 @@
                 android:layout_height="220dp"/>
 
             <RelativeLayout
-                android:visibility="visible"
                 android:id="@+id/container_add_link"
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:layout_centerInParent="true"
                 android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp">
+                android:layout_marginEnd="32dp"
+                android:visibility="visible">
 
                 <com.playsho.android.component.Sheet
                     style="@style/font_h5"

@@ -28,4 +28,11 @@ interface APIService {
     fun checkEntrance(
         @Path("tag") tag: String
     ): Call<Response>
+
+    @POST(Conf.Path.V1_ROOM_LINK)
+    fun addLink(
+        @Path("tag") tag: String,
+        @Body body: RequestBody
+    ): Call<Response>
+
 }

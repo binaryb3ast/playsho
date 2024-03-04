@@ -61,6 +61,14 @@ object Agent {
         fun checkEntrance(roomTag: String): Call<Response> {
             return RetrofitClient.getNetworkConfiguration().checkEntrance(roomTag);
         }
+
+        fun addLink(roomTag: String , link:String): Call<Response> {
+            val builder = FormBody.Builder().apply {
+                add(Conf.Query.STREAM_LINK, link)
+            }
+            val body: RequestBody = builder.build()
+            return RetrofitClient.getNetworkConfiguration().addLink(roomTag,body);
+        }
     }
 
 

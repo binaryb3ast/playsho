@@ -1,15 +1,15 @@
 package com.playsho.android.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.View
 import com.google.android.material.snackbar.Snackbar
 import com.playsho.android.R
 import com.playsho.android.base.BaseActivity
 import com.playsho.android.base.BaseBottomSheet
 import com.playsho.android.databinding.ActivitySettingBinding
-import com.playsho.android.databinding.BottomSheetChangeNameBinding
 import com.playsho.android.network.Agent
 import com.playsho.android.network.Response
-import com.playsho.android.network.SocketManager
 import com.playsho.android.ui.bottomsheet.ChangeNameBottomSheet
 import com.playsho.android.utils.KeyStoreHelper
 import com.playsho.android.utils.LocalController
@@ -17,10 +17,6 @@ import com.playsho.android.utils.RSAHelper
 import com.playsho.android.utils.accountmanager.AccountInstance
 import retrofit2.Call
 import retrofit2.Callback
-import java.io.ByteArrayInputStream
-import java.security.KeyPair
-import java.security.PublicKey
-import java.security.cert.CertificateFactory
 
 class SettingActivity : BaseActivity<ActivitySettingBinding>() {
 
@@ -40,15 +36,17 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
             finish()
         }
         binding.containerGenerateKeys.setOnClickListener {
+            binding.progress.visibility = View.VISIBLE
             KeyStoreHelper.getInstance().deleteEntry(KeyStoreHelper.KeyAllies.RSA_KEYS)
 
-            val keys = RSAHelper.generateKeyPair();
+            val keys = RSAHelper.generateKeyPair()
             // Create a certificate chain containing the public key
 
             Agent.Device.regenerateKeypair(RSAHelper.printPublicKey(keys))
                 .enqueue(object : Callback<Response> {
 
                     override fun onFailure(call: Call<Response>, t: Throwable) {
+                        binding.progress.visibility = View.GONE
                         Snackbar.make(
                             binding.root,
                             LocalController.getString(R.string.rsa_key_pair_successfully_regenerated),
@@ -60,6 +58,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
                         call: Call<Response>,
                         response: retrofit2.Response<Response>
                     ) {
+                        binding.progress.visibility = View.GONE
                         Snackbar.make(
                             binding.root,
                             response.body()?.message
@@ -72,7 +71,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
         }
 
         binding.containerChangeName.setOnClickListener {
-            var bottomSheet = ChangeNameBottomSheet()
+            val bottomSheet = ChangeNameBottomSheet()
             bottomSheet.setOnResult(callback = object : BaseBottomSheet.BottomSheetResultCallback {
                 override fun onBottomSheetProcessSuccess(data: String) {
                     loadData()
@@ -96,6 +95,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
         loadData()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun loadData() {
         binding.txtTag.text = "Tag:${AccountInstance.getUserData("tag")}"
         binding.txtUserName.text = AccountInstance.getUserData("user_name")

@@ -14,9 +14,11 @@ object Conf {
         const val V1_ROOM_CREATE = "/v1/api/room"
         const val V1_ROOM_GET = "/v1/api/room/{tag}"
         const val V1_ROOM_ENTRANCE = "/v1/api/room/{tag}/entrance"
+        const val V1_ROOM_LINK = "/v1/api/room/{tag}/link"
     }
 
     object Query {
+        const val STREAM_LINK = "stream_link"
         const val OS = "os"
         const val APP_VER = "app_version"
         const val APP_VER_NAME = "app_version_name"

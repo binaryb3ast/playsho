@@ -24,6 +24,7 @@ import com.playsho.android.databinding.ActivityRoomBinding
 import com.playsho.android.network.Agent
 import com.playsho.android.network.Response
 import com.playsho.android.network.SocketManager
+import com.playsho.android.ui.bottomsheet.AddStreamLinkBottomSheet
 import com.playsho.android.utils.Crypto
 import com.playsho.android.utils.RSAHelper
 import com.playsho.android.utils.ThemeHelper
@@ -226,6 +227,10 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
             val encryptedMsg = Crypto.encryptAES(binding.input.text.toString() ,ROOM_KEY)
             sendMsgThroughSocket(encryptedMsg)
             binding.input.setText("")
+        }
+        binding.containerAddLink.setOnClickListener{
+            val bottomSheet = AddStreamLinkBottomSheet()
+            bottomSheet.show(supportFragmentManager , "LINK")
         }
         configRecycler()
     }
