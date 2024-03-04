@@ -20,7 +20,7 @@ data class Response(
 
     @SerializedName("errors")
     @Expose
-    val errors: List<Error>,
+    val errors: List<Errors>,
 
     @SerializedName("meta")
     @Expose

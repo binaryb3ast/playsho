@@ -84,7 +84,11 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
                 }
 
                 override fun onBottomSheetProcessFail(data: String) {
-                    // Handle failure
+                    Snackbar.make(
+                        binding.root,
+                        data,
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 }
             })
             bottomSheet.show(supportFragmentManager, "name")

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.service.carrier.CarrierMessagingService.ResultCallback
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.playsho.android.R
 import com.playsho.android.base.BaseBottomSheet
 import com.playsho.android.databinding.BottomSheetChangeNameBinding
@@ -61,10 +62,22 @@ class ChangeNameBottomSheet : BaseBottomSheet<BottomSheetChangeNameBinding>() {
                 call: Call<Response>,
                 response: retrofit2.Response<Response>
             ) {
-                AccountInstance.updateAccountUserData("user_name" , binding.input.text.toString())
-                dismiss()
                 binding.btn.stopProgress()
-                callback.onBottomSheetProcessSuccess(binding.input.text.toString())
+                if (response.isSuccessful){
+                    AccountInstance.updateAccountUserData("user_name" , binding.input.text.toString())
+                    binding.btn.stopProgress()
+                    callback.onBottomSheetProcessSuccess(binding.input.text.toString())
+                    dismiss()
+                }else{
+                    val errorResponse = response.errorBody()?.string()?.let {
+                        Gson().fromJson(it, Response::class.java)
+                    }
+                    Snackbar.make(
+                        dialog?.window?.decorView ?:requireActivity().findViewById(android.R.id.content),
+                        errorResponse?.errors?.getOrNull(0)?.message ?: "Error",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
 
             }
         })
