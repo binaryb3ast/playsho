@@ -1,14 +1,20 @@
 package com.playsho.android.ui.bottomsheet
 
 import android.content.Intent
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Bundle
 import android.view.View
+import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.playsho.android.R
 import com.playsho.android.base.BaseBottomSheet
 import com.playsho.android.databinding.BottomSheetJoinRoomBinding
+import com.playsho.android.network.Agent
+import com.playsho.android.network.Response
 import com.playsho.android.ui.RoomActivity
+import com.playsho.android.utils.ClipboardHandler
 import com.playsho.android.utils.ThemeHelper
+import retrofit2.Call
+import retrofit2.Callback
 
 class JoinRoomBottomSheet : BaseBottomSheet<BottomSheetJoinRoomBinding>() {
     override fun getLayoutResourceId(): Int {
@@ -47,20 +53,83 @@ class JoinRoomBottomSheet : BaseBottomSheet<BottomSheetJoinRoomBinding>() {
         "Roomie Reel Rendezvous: Gather 'Round with the Room Tag for Films!",
         "Movie Tag Mania: Dial Up the Room Tag for Epic Entertainment!"
     )
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.txtTitle.text = titleArray.random()
         binding.input.background = ThemeHelper.createRect(
             R.color.neutral_100,
             45,
         )
-        binding.btn.setOnClickListener{
-            val intent =Intent(activity, RoomActivity::class.java).apply {
-                 putExtra("tag" , binding.input.text.toString().trim())
+        if (ClipboardHandler.hasTextPlainData()) {
+            val copiedText = ClipboardHandler.getIndex(0)
+            val prefix = "https://playsho.com/room/"
+            if (copiedText.startsWith(prefix)) {
+                binding.input.setText(copiedText.removePrefix(prefix))
             }
-            activity?.startActivity(intent)
-            dismiss()
         }
+        binding.btn.setOnClickListener {
+            if (binding.input.text.toString().trim().isEmpty()) {
+                Snackbar.make(
+                    dialog?.window?.decorView
+                        ?: requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.oops_looks_like_the_room_tag_is_missing),
+                    Snackbar.LENGTH_LONG
+                ).show()
+            } else {
+                requestCheckRoom(extractTagFromInput())
+            }
+        }
+    }
+
+    private fun extractTagFromInput(): String {
+        var tag = binding.input.text.toString().trim()
+        tag = tag.replace("https://playsho.com/room/", "")
+        return tag;
+    }
+
+
+    private fun requestCheckRoom(tag: String) {
+        Agent.Room.checkEntrance(tag).enqueue(object :
+            Callback<Response> {
+
+            override fun onFailure(call: Call<Response>, t: Throwable) {
+                Snackbar.make(
+                    dialog?.window?.decorView
+                        ?: requireActivity().findViewById(android.R.id.content),
+                    t.message ?: "Error",
+                    Snackbar.LENGTH_LONG
+                ).show()
+                binding.btn.stopProgress()
+            }
+
+            override fun onResponse(
+                call: Call<Response>,
+                response: retrofit2.Response<Response>
+            ) {
+                binding.btn.stopProgress()
+                if (response.isSuccessful) {
+                    val intent = Intent(activity, RoomActivity::class.java).apply {
+                        putExtra("tag", response.body()?.result?.room?.tag)
+                    }
+                    activity?.startActivity(intent)
+                    binding.btn.stopProgress()
+                    dismiss()
+                } else {
+                    val errorResponse = response.errorBody()?.string()?.let {
+                        Gson().fromJson(it, Response::class.java)
+                    }
+                    Snackbar.make(
+                        dialog?.window?.decorView
+                            ?: requireActivity().findViewById(android.R.id.content),
+                        errorResponse?.errors?.getOrNull(0)?.message ?: "Error",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+
+            }
+        })
     }
 
     override fun initView() {
