@@ -1,22 +1,16 @@
 package com.playsho.android.ui.bottomsheet
 
-import android.content.Intent
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Bundle
-import android.service.carrier.CarrierMessagingService.ResultCallback
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.playsho.android.R
 import com.playsho.android.base.BaseBottomSheet
 import com.playsho.android.databinding.BottomSheetChangeNameBinding
-import com.playsho.android.databinding.BottomSheetJoinRoomBinding
 import com.playsho.android.network.Agent
 import com.playsho.android.network.Response
-import com.playsho.android.network.SocketManager
-import com.playsho.android.ui.RoomActivity
-import com.playsho.android.utils.LocalController
-import com.playsho.android.utils.RSAHelper
+import com.playsho.android.utils.SystemUtilities
 import com.playsho.android.utils.ThemeHelper
 import com.playsho.android.utils.accountmanager.AccountInstance
 import retrofit2.Call
@@ -42,6 +36,16 @@ class ChangeNameBottomSheet : BaseBottomSheet<BottomSheetChangeNameBinding>() {
         binding.btn.setOnClickListener{
             requestChangeName()
         }
+        binding.input.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                SystemUtilities.hideKeyboard(binding.input)
+                requestChangeName()
+                // Handle the "Go" action here
+                // For example, perform some action or submit the form
+                return@setOnEditorActionListener true  // Return true to indicate that the action was handled
+            }
+            return@setOnEditorActionListener false // Return false if the action was not handled
+        }
     }
 
     fun setOnResult(callback: BottomSheetResultCallback){
@@ -49,11 +53,15 @@ class ChangeNameBottomSheet : BaseBottomSheet<BottomSheetChangeNameBinding>() {
     }
 
     private fun requestChangeName(){
+        SystemUtilities.hideKeyboard(binding.input)
         binding.btn.startProgress()
         Agent.Device.updateName(binding.input.text.toString()).enqueue(object :
             Callback<Response> {
 
             override fun onFailure(call: Call<Response>, t: Throwable) {
+                binding.input.requestFocus()
+                binding.input.selectAll()
+                SystemUtilities.showKeyboard(binding.input)
                 binding.btn.stopProgress()
                 callback.onBottomSheetProcessFail("")
             }

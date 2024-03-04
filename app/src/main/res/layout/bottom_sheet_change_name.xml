@@ -25,6 +25,7 @@
             android:textColorHint="@color/neutral_500"
             style="@style/font_subtitle_regular"
             android:maxLines="1"
+            android:imeOptions="actionDone"
             android:paddingEnd="12dp"
             android:inputType="textPersonName"
             android:paddingStart="12dp"
