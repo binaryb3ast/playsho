@@ -84,7 +84,7 @@
             android:layout_marginBottom="16dp"
             android:gravity="center"
             android:text="@string/join_room"
-            android:textColor="@color/button_primary" />
+            android:textColor="@color/neutral_900" />
 
         <com.playsho.android.component.Button
             android:id="@+id/btn"
