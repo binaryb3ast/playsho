@@ -57,6 +57,10 @@ object Agent {
         fun get(roomTag: String): Call<Response> {
             return RetrofitClient.getNetworkConfiguration().getRoom(roomTag);
         }
+
+        fun checkEntrance(roomTag: String): Call<Response> {
+            return RetrofitClient.getNetworkConfiguration().checkEntrance(roomTag);
+        }
     }
 
 

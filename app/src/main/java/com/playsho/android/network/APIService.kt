@@ -23,4 +23,9 @@ interface APIService {
     fun getRoom(
         @Path("tag") tag: String
     ): Call<Response>
+
+    @GET(Conf.Path.V1_ROOM_ENTRANCE)
+    fun checkEntrance(
+        @Path("tag") tag: String
+    ): Call<Response>
 }
