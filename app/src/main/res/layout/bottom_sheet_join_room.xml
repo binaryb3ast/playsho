@@ -29,6 +29,8 @@
             android:paddingEnd="12dp"
             android:paddingStart="12dp"
             android:id="@+id/input"
+            android:inputType="text"
+            android:imeOptions="actionDone"
             android:textColor="@color/neutral_900"
             android:hint="@string/paste_or_type_your_room_code_ex"
             android:layout_marginTop="32dp"
