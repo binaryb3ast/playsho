@@ -13,6 +13,9 @@ interface APIService {
     @POST(Conf.Path.V1_ROOM_CREATE)
     fun createRoom(): Call<Response>
 
+    @POST(Conf.Path.V1_DEVICE_NAME)
+    fun updateName(@Body body: RequestBody): Call<Response>
+
     @POST(Conf.Path.V1_DEVICE_KEYPAIR_REGENERATE)
     fun regenerateDeviceKeypair(@Body body: RequestBody): Call<Response>
 

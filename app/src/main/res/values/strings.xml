@@ -28,6 +28,7 @@
     <string name="sign_out">Sign out</string>
     <string name="sign_out_from_your_account_and_register_again">Sign out from your account and register again</string>
     <string name="rsa_key_pair_successfully_regenerated">🔑 RSA key pair successfully regenerated! 🎉</string>
+    <string name="name_successfully_updated">Ta-da! Your name has been successfully updated!</string>
     <string name="rsa_key_pair_fail_regenerated">🔑 Oh no! Something went wrong while regenerating the RSA key pair. 🤯 Please try again later and we\'ll get it sorted out! 🛠️</string>
     <string name="enter_your_name_e_g_john_doe">Enter your name (e.g., John Doe)</string>
     <string name="we_d_love_to_get_to_know_you_better">We\'d love to get to know you better. 😊</string>

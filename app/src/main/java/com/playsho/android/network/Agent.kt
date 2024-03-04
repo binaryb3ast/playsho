@@ -39,6 +39,14 @@ object Agent {
             val body: RequestBody = builder.build()
             return RetrofitClient.getNetworkConfiguration().regenerateDeviceKeypair(body)
         }
+
+        fun updateName(name: String): Call<Response> {
+            val builder = FormBody.Builder().apply {
+                add(Conf.Query.USER_NAME, name)
+            }
+            val body: RequestBody = builder.build()
+            return RetrofitClient.getNetworkConfiguration().updateName(body)
+        }
     }
 
     object Room {

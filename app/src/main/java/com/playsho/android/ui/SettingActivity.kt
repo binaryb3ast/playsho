@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import com.playsho.android.R
 import com.playsho.android.base.BaseActivity
+import com.playsho.android.base.BaseBottomSheet
 import com.playsho.android.databinding.ActivitySettingBinding
 import com.playsho.android.databinding.BottomSheetChangeNameBinding
 import com.playsho.android.network.Agent
@@ -61,7 +62,8 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
                     ) {
                         Snackbar.make(
                             binding.root,
-                            response.body()?.message ?: LocalController.getString(R.string.rsa_key_pair_successfully_regenerated),
+                            response.body()?.message
+                                ?: LocalController.getString(R.string.rsa_key_pair_successfully_regenerated),
                             Snackbar.LENGTH_LONG
                         ).show()
                     }
@@ -69,9 +71,23 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
 
         }
 
-        binding.containerChangeName.setOnClickListener{
-            var bottomsheet = ChangeNameBottomSheet()
-            bottomsheet.show(supportFragmentManager , "name")
+        binding.containerChangeName.setOnClickListener {
+            var bottomSheet = ChangeNameBottomSheet()
+            bottomSheet.setOnResult(callback = object : BaseBottomSheet.BottomSheetResultCallback {
+                override fun onBottomSheetProcessSuccess(data: String) {
+                    loadData()
+                    Snackbar.make(
+                        binding.root,
+                        LocalController.getString(R.string.name_successfully_updated),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+
+                override fun onBottomSheetProcessFail(data: String) {
+                    // Handle failure
+                }
+            })
+            bottomSheet.show(supportFragmentManager, "name")
         }
         loadData()
     }

@@ -9,9 +9,10 @@ object Conf {
 
     object Path {
         const val V1_DEVICE_GENERATE = "/v1/api/device/generate"
+        const val V1_DEVICE_NAME = "/v1/api/device/name"
+        const val V1_DEVICE_KEYPAIR_REGENERATE = "/v1/api/device/keypair/regenerate"
         const val V1_ROOM_CREATE = "/v1/api/room"
         const val V1_ROOM_GET = "/v1/api/room/{tag}"
-        const val V1_DEVICE_KEYPAIR_REGENERATE = "/v1/api/device/keypair/regenerate"
     }
 
     object Query {
@@ -27,6 +28,7 @@ object Conf {
         const val FCM = "fcm"
         const val SECRET = "secret"
         const val PUBLIC_KEY = "public_key"
+        const val USER_NAME = "user_name"
     }
 
 }
