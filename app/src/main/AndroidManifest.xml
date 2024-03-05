@@ -5,24 +5,20 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
-        android:allowBackup="true"
         android:name=".base.ApplicationLoader"
+        android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Playsho"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <activity
-            android:name=".ProfileActivity"
-            android:exported="true">
-
-        </activity>
 
         <service
             android:name=".utils.accountmanager.AccountAuthenticatorService"
@@ -35,7 +31,9 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
         </service>
-        <activity android:name="com.playsho.android.ui.SplashActivity"
+
+        <activity
+            android:name="com.playsho.android.ui.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,17 +44,24 @@
             <!-- Intent filter for handling deep links -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Accepts URIs that begin with "http://www.example.com/gizmos” -->
                 <data android:scheme="http" />
                 <data android:scheme="https" />
-                <data android:host="www.playshow.com"/>
-                <data android:pathPrefix="/tag"/>
+                <data android:host="www.playshow.com" />
+                <data android:pathPrefix="/tag" />
             </intent-filter>
         </activity>
-        <activity android:name="com.playsho.android.ui.RoomActivity" android:windowSoftInputMode="adjustPan"/>
-        <activity android:name="com.playsho.android.ui.SettingActivity" />
+        <activity
+            android:name="com.playsho.android.ui.RoomActivity"
+            android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name="com.playsho.android.ui.SettingActivity"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>

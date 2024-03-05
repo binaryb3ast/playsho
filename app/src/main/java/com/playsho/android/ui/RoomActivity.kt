@@ -1,10 +1,11 @@
 package com.playsho.android.ui
 
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -30,13 +31,12 @@ import com.playsho.android.network.Response
 import com.playsho.android.network.SocketManager
 import com.playsho.android.ui.bottomsheet.AddStreamLinkBottomSheet
 import com.playsho.android.utils.Crypto
-import com.playsho.android.utils.PlayerUtils
 import com.playsho.android.utils.RSAHelper
 import com.playsho.android.utils.ThemeHelper
 import retrofit2.Call
 import retrofit2.Callback
-import java.net.URLConnection
 import java.security.KeyPair
+
 
 class RoomActivity : BaseActivity<ActivityRoomBinding>() {
 
@@ -221,8 +221,18 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
         }
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+        binding.containerAdd.setOnClickListener{
+            val orientation = resources.configuration.orientation
+            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE;
+            } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+            }
+        }
         keyPairMap = RSAHelper.getKeyPairs()
         roomObject = Room(
             tag = getIntentStringExtra("tag") ?: "crash_room"
@@ -382,5 +392,16 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
             R.color.neutral_100,
             45,
         )
+    }
+
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Log.e(TAG, "onConfigurationChanged: ORIENTATION_LANDSCAPE"  )
+        } else {
+            Log.e(TAG, "onConfigurationChanged: ORIENTATION_PORTRAIT"  )
+
+        }
     }
 }
