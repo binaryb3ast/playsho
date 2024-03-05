@@ -20,10 +20,11 @@ import com.playsho.android.utils.ThemeHelper
 import retrofit2.Call
 import retrofit2.Callback
 
-class AddStreamLinkBottomSheet : BaseBottomSheet<BottomSheetAddLinkBinding>() {
+class AddStreamLinkBottomSheet(private val roomTag: String) : BaseBottomSheet<BottomSheetAddLinkBinding>() {
     override fun getLayoutResourceId(): Int {
         return R.layout.bottom_sheet_add_link
     }
+    lateinit var callback: BottomSheetResultCallback
 
     var titleArray = arrayOf(
         "Movie Time is Calling!",
@@ -98,8 +99,12 @@ class AddStreamLinkBottomSheet : BaseBottomSheet<BottomSheetAddLinkBinding>() {
         return matcher.matches()
     }
 
+    fun setOnResult(callback: BottomSheetResultCallback){
+        this.callback = callback
+    }
+
     private fun requestAddLink(url: String) {
-        Agent.Room.checkEntrance(url).enqueue(object :
+        Agent.Room.addLink(roomTag , url).enqueue(object :
             Callback<Response> {
 
             override fun onFailure(call: Call<Response>, t: Throwable) {
@@ -110,6 +115,8 @@ class AddStreamLinkBottomSheet : BaseBottomSheet<BottomSheetAddLinkBinding>() {
                     Snackbar.LENGTH_LONG
                 ).show()
                 binding.btn.stopProgress()
+                callback.onBottomSheetProcessFail(t.message ?: "Error")
+
             }
 
             override fun onResponse(
@@ -118,9 +125,14 @@ class AddStreamLinkBottomSheet : BaseBottomSheet<BottomSheetAddLinkBinding>() {
             ) {
                 binding.btn.stopProgress()
                 if (response.isSuccessful) {
-
+                    Snackbar.make(
+                        requireActivity().findViewById(android.R.id.content),
+                        response.body()?.message ?: "Error",
+                        Snackbar.LENGTH_LONG
+                    ).show()
                     binding.btn.stopProgress()
                     dismiss()
+                    callback.onBottomSheetProcessSuccess(binding.input.text.toString())
                 } else {
                     val errorResponse = response.errorBody()?.string()?.let {
                         Gson().fromJson(it, Response::class.java)
@@ -131,6 +143,8 @@ class AddStreamLinkBottomSheet : BaseBottomSheet<BottomSheetAddLinkBinding>() {
                         errorResponse?.errors?.getOrNull(0)?.message ?: "Error",
                         Snackbar.LENGTH_LONG
                     ).show()
+                    callback.onBottomSheetProcessFail(errorResponse?.errors?.getOrNull(0)?.message ?: "Error")
+
                 }
 
             }

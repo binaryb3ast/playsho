@@ -3,6 +3,7 @@ package com.playsho.android.ui
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -18,8 +19,10 @@ import com.google.gson.Gson
 import com.playsho.android.R
 import com.playsho.android.adapter.MessageAdapter
 import com.playsho.android.base.BaseActivity
+import com.playsho.android.base.BaseBottomSheet
 import com.playsho.android.data.Device
 import com.playsho.android.data.Message
+import com.playsho.android.data.Room
 import com.playsho.android.databinding.ActivityRoomBinding
 import com.playsho.android.network.Agent
 import com.playsho.android.network.Response
@@ -30,6 +33,7 @@ import com.playsho.android.utils.RSAHelper
 import com.playsho.android.utils.ThemeHelper
 import retrofit2.Call
 import retrofit2.Callback
+import java.net.URLConnection
 import java.security.KeyPair
 
 class RoomActivity : BaseActivity<ActivityRoomBinding>() {
@@ -45,8 +49,7 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
     private var mediaItemIndex = 0
     private var playbackPosition = 0L
     val gson = Gson()
-    private var ROOM_TAG = ""
-    private lateinit var ROOM_KEY: String
+    private lateinit var roomObject: Room
     private var members = mutableMapOf<String, Device>()
     private lateinit var messageAdapter: MessageAdapter
     override fun getLayoutResourceId(): Int {
@@ -59,13 +62,14 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
 
     public override fun onStart() {
         super.onStart()
-        initializePlayer()
+        if (!roomObject.streamLink.isNullOrEmpty())
+            initializePlayer()
     }
 
     public override fun onResume() {
         super.onResume()
         hideSystemUi()
-        if (player == null) {
+        if (player == null && !roomObject.streamLink.isNullOrEmpty()) {
             initializePlayer()
         }
     }
@@ -82,7 +86,7 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
 
     override fun onDestroy() {
         super.onDestroy()
-        SocketManager.leaveRoom(ROOM_TAG)
+        SocketManager.leaveRoom(roomObject.tag)
     }
 
     private fun initializePlayer() {
@@ -218,19 +222,31 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         keyPairMap = RSAHelper.getKeyPairs()
-
-        ROOM_TAG = getIntentStringExtra("tag") ?: "crash_room"
+        roomObject = Room(
+            tag = getIntentStringExtra("tag") ?: "crash_room"
+        )
         setStatusBarColor(R.color.black_background, true)
-        requestGetRoom(ROOM_TAG)
+        requestGetRoom(roomObject.tag)
         initUi()
         binding.icSend.setOnClickListener {
-            val encryptedMsg = Crypto.encryptAES(binding.input.text.toString() ,ROOM_KEY)
-            sendMsgThroughSocket(encryptedMsg)
-            binding.input.setText("")
+            roomObject.roomKey?.let {
+                val encryptedMsg = Crypto.encryptAES(binding.input.text.toString(), it)
+                sendMsgThroughSocket(encryptedMsg)
+                binding.input.setText("")
+            }
         }
-        binding.containerAddLink.setOnClickListener{
-            val bottomSheet = AddStreamLinkBottomSheet()
-            bottomSheet.show(supportFragmentManager , "LINK")
+        binding.containerAddLink.setOnClickListener {
+            val bottomSheet = AddStreamLinkBottomSheet(roomObject.tag)
+            bottomSheet.setOnResult(callback = object : BaseBottomSheet.BottomSheetResultCallback {
+                override fun onBottomSheetProcessSuccess(data: String) {
+                    roomObject.streamLink = data
+                }
+
+                override fun onBottomSheetProcessFail(data: String) {
+
+                }
+            })
+            bottomSheet.show(supportFragmentManager, "LINK")
         }
         configRecycler()
     }
@@ -258,10 +274,11 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
                         SocketManager.on(SocketManager.EVENTS.NEW_MESSAGE, ::handleNewMessage)
                         SocketManager.on(SocketManager.EVENTS.JOINED, ::handleJoinMember)
                         SocketManager.on(SocketManager.EVENTS.LEFT, ::handleMemberLeft)
+                        SocketManager.on(SocketManager.EVENTS.NEW_LINK, ::handleNewLink)
                     }
                     response.body()?.result?.room?.roomKey?.let {
                         runOnUiThread {
-                            ROOM_KEY = RSAHelper.decrypt(it,keyPairMap.private)
+                            roomObject.roomKey = RSAHelper.decrypt(it, keyPairMap.private)
                         }
 
                     }
@@ -275,10 +292,21 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
         val message = gson.fromJson(data[0].toString(), Message::class.java)
         addMemberLocal(message.sender)
         if (message.type != "system") {
-            message.message = Crypto.decryptAES(message.message,ROOM_KEY)
-        }else{
+            roomObject.roomKey?.let {
+                message.message = Crypto.decryptAES(message.message, it)
+            }
+        } else {
             message.sender.color = members[message.sender.tag]?.color
         }
+        runOnUiThread {
+            messageAdapter.addMessage(message) // Assuming `adapter` is your MessageAdapter instance
+            binding.recyclerMessage.smoothScrollToPosition(0)
+        }
+    }
+
+    private fun handleNewLink(data: Array<Any>) {
+        val message = gson.fromJson(data[0].toString(), Message::class.java)
+        roomObject.streamLink = message.payload
         runOnUiThread {
             messageAdapter.addMessage(message) // Assuming `adapter` is your MessageAdapter instance
             binding.recyclerMessage.smoothScrollToPosition(0)
@@ -313,6 +341,7 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
         }
         Log.e(TAG, "handleJoinMember: " + members.size)
     }
+
     private fun handleMemberLeft(data: Array<Any>) {
         val message = gson.fromJson(data[0].toString(), Message::class.java)
         removeMemberLocal(message.sender)
@@ -324,7 +353,7 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
     }
 
     private fun sendMsgThroughSocket(msg: String) {
-        SocketManager.sendMessage(ROOM_TAG, msg)
+        SocketManager.sendMessage(roomObject.tag, msg)
     }
 
     private fun initUi() {

@@ -16,6 +16,7 @@ object SocketManager {
         const val NEW_MESSAGE = "new_message"
         const val JOINED = "joined"
         const val LEFT = "left"
+        const val NEW_LINK = "new_link"
         const val TRADE = "trade"
         const val EXCHANGE = "exchange"
     }

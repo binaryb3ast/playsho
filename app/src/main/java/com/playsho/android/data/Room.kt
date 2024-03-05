@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName
 data class Room(
     @SerializedName("tag")
     @Expose
-    val tag: String? = "",
+    val tag: String = "",
 
     @SerializedName("stream_link")
     @Expose
-    val streamLink: String? = "",
+    var streamLink: String? = "",
 
     @SerializedName("status")
     @Expose
@@ -18,7 +18,7 @@ data class Room(
 
     @SerializedName("room_key")
     @Expose
-    val roomKey: String? = "",
+    var roomKey: String? = "",
 
 ) {
 

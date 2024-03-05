@@ -25,6 +25,8 @@
         <TextView
             android:id="@+id/txt_message"
             style="@style/font_caption_regular"
+            android:gravity="center"
+            android:layout_centerInParent="true"
             android:textColor="@color/neutral_900"
             android:text="You have joined the room"
             android:layout_width="wrap_content"
