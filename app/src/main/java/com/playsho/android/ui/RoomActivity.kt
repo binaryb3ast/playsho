@@ -3,6 +3,7 @@ package com.playsho.android.ui
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -29,6 +30,7 @@ import com.playsho.android.network.Response
 import com.playsho.android.network.SocketManager
 import com.playsho.android.ui.bottomsheet.AddStreamLinkBottomSheet
 import com.playsho.android.utils.Crypto
+import com.playsho.android.utils.PlayerUtils
 import com.playsho.android.utils.RSAHelper
 import com.playsho.android.utils.ThemeHelper
 import retrofit2.Call
@@ -45,7 +47,7 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
     private val playbackStateListener: Player.Listener = playbackStateListener()
     private var player: Player? = null
     private lateinit var keyPairMap: KeyPair
-    private var playWhenReady = true
+    private var playWhenReady = false
     private var mediaItemIndex = 0
     private var playbackPosition = 0L
     val gson = Gson()
@@ -104,13 +106,13 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
                     .build()
 
                 val mediaItem = MediaItem.Builder()
-                    .setUri("https://dl3.freeserver.top/st01/film/1402/12/The.Zone.of.Interest.2023.480p.WEB-DL.HardSub.DigiMoviez.mp4?md5=OhTtoOF_n_FV1xg_eIyCoA&expires=1708853204")
+                    .setUri(roomObject.streamLink)
                     .setMimeType(MimeTypes.VIDEO_MP4)
                     .build()
                 exoPlayer.setMediaItems(listOf(mediaItem), mediaItemIndex, playbackPosition)
                 exoPlayer.playWhenReady = playWhenReady
                 exoPlayer.addListener(playbackStateListener)
-//                exoPlayer.prepare()
+                exoPlayer.prepare()
             }
             .apply {
                 addListener(object : Player.Listener {
@@ -308,6 +310,9 @@ class RoomActivity : BaseActivity<ActivityRoomBinding>() {
         val message = gson.fromJson(data[0].toString(), Message::class.java)
         roomObject.streamLink = message.payload
         runOnUiThread {
+            binding.containerAddLink.visibility = View.GONE
+            binding.playerView.visibility = View.VISIBLE
+            initializePlayer()
             messageAdapter.addMessage(message) // Assuming `adapter` is your MessageAdapter instance
             binding.recyclerMessage.smoothScrollToPosition(0)
         }
