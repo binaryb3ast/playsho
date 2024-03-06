@@ -41,6 +41,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
         return R.layout.activity_splash;
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onResume() {
         super.onResume()
         binding.txtName.text = "Logged in as  ${AccountInstance.getUserData("user_name")}."
@@ -49,6 +50,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
         TODO("Not yet implemented")
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStatusBarColor(R.color.black_background, true)
@@ -76,7 +78,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
             if (AccountInstance.hasAnyAccount()){
                 requestCreateRoom()
             }else{
-                requestGenerateDevice()
+//                requestGenerateDevice()
             }
         }
         binding.btnJoin.setOnClickListener{
@@ -86,7 +88,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
     }
 
     private fun requestGenerateDevice(){
-        binding.txtName.text = "Loading..."
+        binding.txtName.text = LocalController.getString(R.string.loading_with_dot)
         keyPairMap = RSAHelper.generateKeyPair()
         Agent.Device.generate(RSAHelper.printPublicKey(keyPairMap)).enqueue(object : Callback<Response> {
 
@@ -99,6 +101,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
                 call: Call<Response>,
                 response: retrofit2.Response<Response>
             ) {
+                AccountInstance.removeAccount(response.body()?.result?.device?.userName ?: "unknown")
                 val account = AccountInstance.createAccount(
                     response.body()?.result?.device?.userName ?: "unknown", "", Bundle().apply {
                         putString(
@@ -107,6 +110,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
                         )
                         putString("tag", response.body()?.result?.device?.tag)
                     });
+
                 binding.txtName.text =
                     "Login as ${response.body()?.result?.device?.userName ?: "ERROR"}"
 
@@ -123,6 +127,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
     }
 
     private fun requestCreateRoom() {
+
         Agent.Room.create().enqueue(object : Callback<Response> {
 
             override fun onFailure(call: Call<Response>, t: Throwable) {
@@ -135,7 +140,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
             ) {
                 if(response.isSuccessful){
                     binding.btn.stopProgress()
-                    openActivity<RoomActivity>(
+                    openActivity<CinemaActivity>(
                         "tag" to response.body()?.result?.room?.tag
                     )
                 }

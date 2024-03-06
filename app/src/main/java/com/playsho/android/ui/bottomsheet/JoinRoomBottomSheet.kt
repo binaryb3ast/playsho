@@ -11,6 +11,7 @@ import com.playsho.android.base.BaseBottomSheet
 import com.playsho.android.databinding.BottomSheetJoinRoomBinding
 import com.playsho.android.network.Agent
 import com.playsho.android.network.Response
+import com.playsho.android.ui.CinemaActivity
 import com.playsho.android.ui.RoomActivity
 import com.playsho.android.utils.ClipboardHandler
 import com.playsho.android.utils.SystemUtilities
@@ -129,7 +130,7 @@ class JoinRoomBottomSheet : BaseBottomSheet<BottomSheetJoinRoomBinding>() {
             ) {
                 binding.btn.stopProgress()
                 if (response.isSuccessful) {
-                    val intent = Intent(activity, RoomActivity::class.java).apply {
+                    val intent = Intent(activity, CinemaActivity::class.java).apply {
                         putExtra("tag", response.body()?.result?.room?.tag)
                     }
                     activity?.startActivity(intent)

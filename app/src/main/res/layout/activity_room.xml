@@ -63,13 +63,6 @@
             android:layout_width="match_parent"
             android:layout_height="220dp">
 
-            <androidx.media3.ui.PlayerView
-                android:id="@+id/playerView"
-                android:layout_width="match_parent"
-                android:visibility="gone"
-                app:show_buffering="when_playing"
-                android:layout_height="220dp"/>
-
             <RelativeLayout
                 android:id="@+id/container_add_link"
                 android:layout_width="match_parent"

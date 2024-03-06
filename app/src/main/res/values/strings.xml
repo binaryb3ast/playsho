@@ -39,4 +39,6 @@
     <string name="ready_for_some_streaming">Ready for some streaming shenanigans? Drop your stream link into the magic box below and let\'s kick off the ultimate movie night! Don\'t keep the flicks waiting, share the fun with your roomies now!</string>
     <string name="submit">Submit</string>
     <string name="hey_there_it_looks_like_you_haven_t_entered_a_valid_stream_link">Hey there! It looks like you haven\'t entered a valid stream link. Give it another shot!</string>
+    <string name="loading_with_dot">Loading...</string>
+    <string name="chat">Chat</string>
 </resources>

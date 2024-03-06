@@ -62,6 +62,7 @@
             android:name="com.playsho.android.ui.SettingActivity"
             android:screenOrientation="portrait"
             />
+        <activity android:name="com.playsho.android.ui.CinemaActivity" android:screenOrientation="landscape" />
     </application>
 
 </manifest>
