@@ -14,6 +14,8 @@ Turn off those movie nights into immersive cinematic experiences with PlaySho! �
   <img src="screenshots/screenshot_four.png" alt="Screenshot 4" width="200">
 </p> 
 
+## 📱 Server Side
+For the Server Side of PlaySho, please visit the [PlaySho Nestjs repository](https://github.com/behnamnasehi/playsho-nest).
 
 ## 🚀 Key Features:
 
