@@ -129,7 +129,7 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
         initializePlayer()
         configRecycler()
         binding.icMessage.setOnClickListener {
-            val bottomSheet = SendMessageBottomSheet("")
+            val bottomSheet = SendMessageBottomSheet()
             bottomSheet.setOnResult(callback = object : BaseBottomSheet.BottomSheetResultCallback {
                 override fun onBottomSheetProcessSuccess(data: String) {
                     roomObject.roomKey?.let {
@@ -176,10 +176,8 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
                         runOnUiThread {
                             roomObject.roomKey = RSAHelper.decrypt(it, keyPairMap.private)
                         }
-
                     }
                 }
-
             }
         })
     }
