@@ -1,14 +1,11 @@
 package com.playsho.android.ui
 
 import android.annotation.SuppressLint
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -18,11 +15,7 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.common.TrackSelectionParameters
-import androidx.media3.common.util.Util
-import androidx.media3.datasource.DefaultDataSourceFactory
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.ProgressiveMediaSource
-import androidx.media3.ui.PlayerView
 import androidx.media3.ui.PlayerView.ControllerVisibilityListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
@@ -34,19 +27,14 @@ import com.playsho.android.data.Device
 import com.playsho.android.data.Message
 import com.playsho.android.data.Room
 import com.playsho.android.databinding.ActivityCinemaBinding
-import com.playsho.android.databinding.ActivityRoomBinding
 import com.playsho.android.network.Agent
 import com.playsho.android.network.Response
 import com.playsho.android.network.SocketManager
 import com.playsho.android.ui.bottomsheet.AddStreamLinkBottomSheet
-import com.playsho.android.ui.bottomsheet.JoinRoomBottomSheet
 import com.playsho.android.ui.bottomsheet.SendMessageBottomSheet
-import com.playsho.android.utils.ClipboardHandler
 import com.playsho.android.utils.Crypto
 import com.playsho.android.utils.DimensionUtils
 import com.playsho.android.utils.RSAHelper
-import com.playsho.android.utils.ThemeHelper
-import com.playsho.android.utils.Validator
 import retrofit2.Call
 import retrofit2.Callback
 import java.security.KeyPair
@@ -156,8 +144,6 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
         })
         initializePlayer()
         configRecycler()
-
-
     }
 
     private fun configRecycler() {
@@ -217,7 +203,10 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
         runOnUiThread {
             messageAdapter.addMessage(message) // Assuming `adapter` is your MessageAdapter instance
             binding.recyclerMessage.smoothScrollToPosition(0)
+            binding.playerView.visibility = View.VISIBLE
+            initializePlayer()
         }
+
     }
 
     private fun addMemberLocal(device: Device) {
@@ -329,12 +318,14 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
             .apply {
                 addListener(object : Player.Listener {
                     override fun onIsPlayingChanged(isPlayingValue: Boolean) {
-                        Log.e(TAG, "onIsPlayingChanged: $isPlayingValue")
+                        SocketManager.userPaused(roomObject.tag, isPlayingValue)
+
+                        Log.e("PLYAER", "onIsPlayingChanged: $isPlayingValue")
                     }
 
                     override fun onTimelineChanged(timeline: Timeline, reason: Int) {
                         super.onTimelineChanged(timeline, reason)
-                        Log.e(TAG, "onTimelineChanged: $reason")
+                        Log.e("PLYAER", "onTimelineChanged: $reason")
                     }
 
 
@@ -344,25 +335,25 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
                         newPosition: Player.PositionInfo,
                         reason: Int
                     ) {
-                        Log.e(TAG, "onPositionDiscontinuity: ${newPosition.positionMs}")
+                        Log.e("PLYAER", "onPositionDiscontinuity: ${newPosition.positionMs}")
 
                         super.onPositionDiscontinuity(oldPosition, newPosition, reason)
                     }
 
                     override fun onPlaybackStateChanged(playbackState: Int) {
                         super.onPlaybackStateChanged(playbackState)
-                        Log.e(TAG, "onPlaybackStateChanged: $playbackState")
+                        Log.e("PLYAER", "onPlaybackStateChanged: $playbackState")
                     }
 
 
                     override fun onIsLoadingChanged(isLoading: Boolean) {
                         super.onIsLoadingChanged(isLoading)
-                        Log.e(TAG, "onIsLoadingChanged: $isLoading")
+                        Log.e("PLYAER", "onIsLoadingChanged: $isLoading")
                     }
 
                     override fun onPlayerError(error: PlaybackException) {
                         super.onPlayerError(error)
-                        Log.e(TAG, "onPlayerError: ", error)
+                        Log.e("PLYAER", "onPlayerError: ", error)
                     }
 
 
@@ -370,7 +361,7 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
                         super.onTrackSelectionParametersChanged(parameters)
 
                         val currentProgressTime = player?.currentPosition
-                        Log.e(TAG, "Current progress time: $currentProgressTime milliseconds")
+                        Log.e("PLYAER", "Current progress time: $currentProgressTime milliseconds")
                         // You can now use the current progress time as needed
 
 

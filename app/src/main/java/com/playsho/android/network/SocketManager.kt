@@ -18,7 +18,7 @@ object SocketManager {
         const val LEFT = "left"
         const val NEW_LINK = "new_link"
         const val TRADE = "trade"
-        const val EXCHANGE = "exchange"
+        const val PAUSE = "pause"
     }
 
     @Synchronized
@@ -114,6 +114,18 @@ object SocketManager {
             e.printStackTrace()
         }
         socket?.emit(EVENTS.SEND_MESSAGE, json)
+    }
+
+    @Synchronized
+    fun userPaused(room: String, isPaused: Boolean) {
+        val json = JSONObject()
+        try {
+            json.put("room", room)
+            json.put("message",  if (!isPaused)  "pause" else "resume")
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        socket?.emit(EVENTS.PAUSE, json)
     }
 
     @Synchronized
