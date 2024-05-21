@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:background="@color/black_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/container_input"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="12dp">
+
+            <com.playsho.android.component.Icon
+                android:id="@+id/ic_send"
+                android:layout_width="@dimen/icon_default_size"
+                android:layout_height="@dimen/icon_default_size"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:src="@drawable/ic_action_send_rocket"
+                app:color="@color/neutral_900" />
+
+            <EditText
+                android:inputType="text"
+                android:maxLines="1"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                android:id="@+id/input"
+                android:textColor="@color/neutral_900"
+                style="@style/font_subtitle_regular"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toStartOf="@id/ic_send"
+                android:layout_toEndOf="@id/ic_emoji"
+                android:background="@null"
+                android:hint="@string/type_a_message_or_link"
+                android:textColorHint="@color/neutral_500" />
+
+            <com.playsho.android.component.Icon
+                android:id="@+id/ic_emoji"
+                android:layout_width="@dimen/icon_default_size"
+                android:layout_height="@dimen/icon_default_size"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:src="@drawable/ic_action_smiley"
+                app:color="@color/neutral_500" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</layout>

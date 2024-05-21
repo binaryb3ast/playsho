@@ -41,4 +41,5 @@
     <string name="hey_there_it_looks_like_you_haven_t_entered_a_valid_stream_link">Hey there! It looks like you haven\'t entered a valid stream link. Give it another shot!</string>
     <string name="loading_with_dot">Loading...</string>
     <string name="chat">Chat</string>
+    <string name="send">Send</string>
 </resources>

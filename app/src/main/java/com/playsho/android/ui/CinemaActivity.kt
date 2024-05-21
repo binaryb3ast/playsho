@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -27,6 +28,7 @@ import com.google.gson.Gson
 import com.playsho.android.R
 import com.playsho.android.adapter.MessageAdapter
 import com.playsho.android.base.BaseActivity
+import com.playsho.android.base.BaseBottomSheet
 import com.playsho.android.data.Device
 import com.playsho.android.data.Message
 import com.playsho.android.data.Room
@@ -35,6 +37,8 @@ import com.playsho.android.databinding.ActivityRoomBinding
 import com.playsho.android.network.Agent
 import com.playsho.android.network.Response
 import com.playsho.android.network.SocketManager
+import com.playsho.android.ui.bottomsheet.JoinRoomBottomSheet
+import com.playsho.android.ui.bottomsheet.SendMessageBottomSheet
 import com.playsho.android.utils.Crypto
 import com.playsho.android.utils.DimensionUtils
 import com.playsho.android.utils.RSAHelper
@@ -124,6 +128,22 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
         })
         initializePlayer()
         configRecycler()
+        binding.icMessage.setOnClickListener {
+            val bottomSheet = SendMessageBottomSheet("")
+            bottomSheet.setOnResult(callback = object : BaseBottomSheet.BottomSheetResultCallback {
+                override fun onBottomSheetProcessSuccess(data: String) {
+                    roomObject.roomKey?.let {
+                        val encryptedMsg = Crypto.encryptAES(data, it)
+                        sendMsgThroughSocket(encryptedMsg)
+                    }
+                }
+
+                override fun onBottomSheetProcessFail(data: String) {
+
+                }
+            })
+            bottomSheet.show(supportFragmentManager , "messsage")
+        }
 
     }
 

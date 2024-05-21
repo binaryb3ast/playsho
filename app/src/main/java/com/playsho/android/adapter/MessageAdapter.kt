@@ -30,7 +30,7 @@ class MessageAdapter(private val dataSet: MutableList<Message>) :
         return if (dataSet[position].type == "system") {
             SYSTEM
         } else if (dataSet[position].sender.tag == AccountInstance.getUserData("tag")) {
-            ME
+            SENDER
         } else {
             SENDER
         }
