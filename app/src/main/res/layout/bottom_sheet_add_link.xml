@@ -1,63 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
     </data>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:background="@color/black_background"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <com.playsho.android.component.Sheet
-            style="@style/font_h4"
-            android:id="@+id/txt_title"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="32dp"
-            android:textColor="@color/neutral_900"
+        <LinearLayout
+            android:id="@+id/container"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+            android:orientation="vertical"
+            android:background="@color/black_background"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        
-        <EditText
-            android:textColorHint="@color/neutral_500"
-            style="@style/font_subtitle_regular"
-            android:maxLines="1"
-            android:imeOptions="actionDone"
-            android:paddingEnd="12dp"
-            android:inputType="textPersonName"
-            android:paddingStart="12dp"
-            android:id="@+id/input"
-            android:textColor="@color/neutral_900"
-            android:hint="@string/paste_the_stream_link_here"
-            android:layout_marginTop="32dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"/>
+            android:layout_height="wrap_content">
+
+            <com.playsho.android.component.Sheet
+                style="@style/font_h4"
+                android:id="@+id/txt_title"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="32dp"
+                android:textColor="@color/neutral_900"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <EditText
+                android:textColorHint="@color/neutral_500"
+                style="@style/font_subtitle_regular"
+                android:maxLines="1"
+                android:imeOptions="actionDone"
+                android:paddingEnd="12dp"
+                android:inputType="textPersonName"
+                android:paddingStart="12dp"
+                android:id="@+id/input"
+                android:textColor="@color/neutral_900"
+                android:hint="@string/paste_the_stream_link_here"
+                android:layout_marginTop="32dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"/>
 
 
-        <com.playsho.android.component.Sheet
-            android:text="@string/ready_for_some_streaming"
-            style="@style/font_body_regular"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="16dp"
-            android:textColor="@color/neutral_500"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            <com.playsho.android.component.Sheet
+                android:text="@string/ready_for_some_streaming"
+                style="@style/font_body_regular"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/neutral_500"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-        <com.playsho.android.component.Button
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:id="@+id/btn"
-            android:layout_marginTop="16dp"
-            android:text="@string/submit"
-            android:layout_marginBottom="32dp"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"/>
+            <com.playsho.android.component.Button
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:id="@+id/btn"
+                android:layout_marginTop="16dp"
+                android:text="@string/submit"
+                android:layout_marginBottom="32dp"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"/>
 
-    </LinearLayout>
+        </LinearLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 </layout>

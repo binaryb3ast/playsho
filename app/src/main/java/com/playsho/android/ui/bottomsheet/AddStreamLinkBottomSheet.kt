@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.util.Patterns
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.widget.LinearLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.playsho.android.R
@@ -25,6 +28,7 @@ class AddStreamLinkBottomSheet(private val roomTag: String) : BaseBottomSheet<Bo
         return R.layout.bottom_sheet_add_link
     }
     lateinit var callback: BottomSheetResultCallback
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
 
     var titleArray = arrayOf(
         "Movie Time is Calling!",
@@ -50,6 +54,28 @@ class AddStreamLinkBottomSheet(private val roomTag: String) : BaseBottomSheet<Bo
     )
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+        // Initialize BottomSheetBehavior from the LinearLayout
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.container)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        val displayMetrics = resources.displayMetrics
+        val screenHeight = displayMetrics.heightPixels
+        bottomSheetBehavior.peekHeight = 0
+
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    // Scroll to top when collapsed or hidden
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                    bottomSheetBehavior.peekHeight = 0  // Optional: Set peek height to 0 for full screen
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // ... (optional handling of slide events)
+            }
+        })
 
         binding.txtTitle.text = titleArray.random()
 

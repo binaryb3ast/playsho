@@ -263,6 +263,16 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
 
         fun onAddLinkPress(view: View){
             val bottomSheet = AddStreamLinkBottomSheet(activity.roomObject.tag)
+            bottomSheet.setOnResult(callback = object : BaseBottomSheet.BottomSheetResultCallback {
+                override fun onBottomSheetProcessSuccess(data: String) {
+                    activity.roomObject.streamLink = data
+                }
+
+                override fun onBottomSheetProcessFail(data: String) {
+
+                }
+            })
+            bottomSheet.show(activity.supportFragmentManager , "link")
         }
 
         fun onMessageIconPressed(view: View){

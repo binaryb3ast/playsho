@@ -6,8 +6,10 @@ import android.support.annotation.Nullable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.playsho.android.R
 import com.playsho.android.db.SessionStorage
@@ -18,6 +20,7 @@ abstract class BaseBottomSheet<B : ViewDataBinding> : BottomSheetDialogFragment(
     private var origin: String? = null
     protected var bottomSheetStatusCallback: BottomSheetStatusCallback? = null
     protected var bottomSheetResultCallback: BottomSheetResultCallback? = null
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
 
     interface BottomSheetStatusCallback {
         fun onBottomSheetShow()
@@ -61,6 +64,7 @@ abstract class BaseBottomSheet<B : ViewDataBinding> : BottomSheetDialogFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
     }
 
     protected fun getSessionStorage(): SessionStorage {
