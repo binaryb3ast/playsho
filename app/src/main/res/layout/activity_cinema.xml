@@ -4,6 +4,9 @@
 
     <data>
 
+        <variable
+            name="handler"
+            type="com.playsho.android.ui.CinemaActivity.ClickHandler" />
     </data>
 
     <RelativeLayout
@@ -12,6 +15,7 @@
         android:background="@color/black_background">
 
         <RelativeLayout
+            android:onClick="@{handler::onAddLinkPress}"
             android:id="@+id/container_add_link"
             android:layout_width="300dp"
             android:layout_height="120dp"
@@ -35,7 +39,7 @@
             android:id="@+id/playerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible"
+            android:visibility="gone"
             app:show_buffering="when_playing" />
 
         <RelativeLayout
@@ -58,6 +62,7 @@
             <com.playsho.android.component.Icon
                 android:layout_width="56dp"
                 android:padding="15dp"
+                android:onClick="@{handler::onMessageIconPressed}"
                 android:layout_height="match_parent"
                 android:id="@+id/ic_message"
                 android:layout_centerVertical="true"

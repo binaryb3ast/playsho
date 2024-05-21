@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
@@ -37,12 +38,15 @@ import com.playsho.android.databinding.ActivityRoomBinding
 import com.playsho.android.network.Agent
 import com.playsho.android.network.Response
 import com.playsho.android.network.SocketManager
+import com.playsho.android.ui.bottomsheet.AddStreamLinkBottomSheet
 import com.playsho.android.ui.bottomsheet.JoinRoomBottomSheet
 import com.playsho.android.ui.bottomsheet.SendMessageBottomSheet
+import com.playsho.android.utils.ClipboardHandler
 import com.playsho.android.utils.Crypto
 import com.playsho.android.utils.DimensionUtils
 import com.playsho.android.utils.RSAHelper
 import com.playsho.android.utils.ThemeHelper
+import com.playsho.android.utils.Validator
 import retrofit2.Call
 import retrofit2.Callback
 import java.security.KeyPair
@@ -70,6 +74,29 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
     override fun onBackPress() {
         TODO("Not yet implemented")
     }
+
+    var titleAddLinkArray = arrayOf(
+        "Movie Time is Calling!",
+        "Lights, Camera, Link!",
+        "Ready to Roll?",
+        "Lights, Link, Action!",
+        "Stream It Like You Mean It!",
+        "Let's Dive into Movie Magic!",
+        "Ready to Hit Play?",
+        "Stream Link Zone",
+        "Enter the Stream Zone!",
+        "Time to Tune In!",
+        "Link Up for Movie Night!",
+        "Streaming Party Starts Here!",
+        "Let's Get Streaming!",
+        "Ready, Set, Stream!",
+        "Hit Play and Share the Fun!",
+        "Lights, Link, Flicks!",
+        "Stream Team, Assemble!",
+        "It's Showtime!",
+        "Enter the Movie Zone!",
+        "Ready for Movie Madness?",
+    )
 
     public override fun onStart() {
         super.onStart()
@@ -111,6 +138,7 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding.handler = ClickHandler(this)
         roomObject = Room(
             tag = getIntentStringExtra("tag") ?: "crash_room"
         )
@@ -128,22 +156,7 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
         })
         initializePlayer()
         configRecycler()
-        binding.icMessage.setOnClickListener {
-            val bottomSheet = SendMessageBottomSheet()
-            bottomSheet.setOnResult(callback = object : BaseBottomSheet.BottomSheetResultCallback {
-                override fun onBottomSheetProcessSuccess(data: String) {
-                    roomObject.roomKey?.let {
-                        val encryptedMsg = Crypto.encryptAES(data, it)
-                        sendMsgThroughSocket(encryptedMsg)
-                    }
-                }
 
-                override fun onBottomSheetProcessFail(data: String) {
-
-                }
-            })
-            bottomSheet.show(supportFragmentManager , "messsage")
-        }
 
     }
 
@@ -244,6 +257,30 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
             binding.recyclerMessage.smoothScrollToPosition(0)
         }
         Log.e(TAG, "handleMemberLeft: " + members.size)
+    }
+
+    class ClickHandler(private val activity: CinemaActivity) {
+
+        fun onAddLinkPress(view: View){
+            val bottomSheet = AddStreamLinkBottomSheet(activity.roomObject.tag)
+        }
+
+        fun onMessageIconPressed(view: View){
+            val bottomSheet = SendMessageBottomSheet()
+            bottomSheet.setOnResult(callback = object : BaseBottomSheet.BottomSheetResultCallback {
+                override fun onBottomSheetProcessSuccess(data: String) {
+                    activity.roomObject.roomKey?.let {
+                        val encryptedMsg = Crypto.encryptAES(data, it)
+                        activity.sendMsgThroughSocket(encryptedMsg)
+                    }
+                }
+
+                override fun onBottomSheetProcessFail(data: String) {
+
+                }
+            })
+            bottomSheet.show(activity.supportFragmentManager , "messsage")
+        }
     }
 
     private fun sendMsgThroughSocket(msg: String) {

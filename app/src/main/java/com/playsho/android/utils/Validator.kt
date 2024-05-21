@@ -1,5 +1,7 @@
 package com.playsho.android.utils
 
+import android.util.Patterns
+
 /**
  * A utility class for performing various validation checks on strings and values.
  */
@@ -13,6 +15,13 @@ object Validator {
      */
     fun isNullOrEmpty(string: String?): Boolean {
         return string.isNullOrEmpty()
+    }
+
+
+    fun isUrl(text: String): Boolean {
+        val pattern = Patterns.WEB_URL
+        val matcher = pattern.matcher(text)
+        return matcher.matches()
     }
 
     /**

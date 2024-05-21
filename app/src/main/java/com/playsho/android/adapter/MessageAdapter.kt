@@ -31,11 +31,10 @@ class MessageAdapter(private val dataSet: MutableList<Message>) :
         return dataSet.size
     }
 
-
     override fun getItemViewType(position: Int): Int {
         return if (dataSet[position].type == "system") {
             SYSTEM
-        } else if (dataSet[position].sender.tag == AccountInstance.getUserData("tag")) {
+        } else if (dataSet[position].sender.tag == AccountInstance.getUserData("tag")) {//me
             SENDER
         } else {
             SENDER

@@ -52,6 +52,7 @@ class AddStreamLinkBottomSheet(private val roomTag: String) : BaseBottomSheet<Bo
         super.onViewCreated(view, savedInstanceState)
 
         binding.txtTitle.text = titleArray.random()
+
         binding.input.background = ThemeHelper.createRect(
             R.color.neutral_100,
             45,
@@ -93,7 +94,7 @@ class AddStreamLinkBottomSheet(private val roomTag: String) : BaseBottomSheet<Bo
         }
     }
 
-    fun isUrl(text: String): Boolean {
+    private fun isUrl(text: String): Boolean {
         val pattern = Patterns.WEB_URL
         val matcher = pattern.matcher(text)
         return matcher.matches()
