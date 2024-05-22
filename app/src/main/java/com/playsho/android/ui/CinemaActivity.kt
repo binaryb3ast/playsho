@@ -9,6 +9,7 @@ import android.view.WindowManager
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MimeTypes
 import androidx.media3.common.PlaybackException
@@ -16,7 +17,7 @@ import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.PlayerView.ControllerVisibilityListener
+import androidx.media3.ui.PlayerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.playsho.android.R
@@ -54,6 +55,7 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
     val gson = Gson()
     private var members = mutableMapOf<String, Device>()
     private lateinit var messageAdapter: MessageAdapter
+    var previousState = ExoPlayer.STATE_IDLE
 
     override fun getLayoutResourceId(): Int {
         return R.layout.activity_cinema
@@ -62,29 +64,6 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
     override fun onBackPress() {
         TODO("Not yet implemented")
     }
-
-    var titleAddLinkArray = arrayOf(
-        "Movie Time is Calling!",
-        "Lights, Camera, Link!",
-        "Ready to Roll?",
-        "Lights, Link, Action!",
-        "Stream It Like You Mean It!",
-        "Let's Dive into Movie Magic!",
-        "Ready to Hit Play?",
-        "Stream Link Zone",
-        "Enter the Stream Zone!",
-        "Time to Tune In!",
-        "Link Up for Movie Night!",
-        "Streaming Party Starts Here!",
-        "Let's Get Streaming!",
-        "Ready, Set, Stream!",
-        "Hit Play and Share the Fun!",
-        "Lights, Link, Flicks!",
-        "Stream Team, Assemble!",
-        "It's Showtime!",
-        "Enter the Movie Zone!",
-        "Ready for Movie Madness?",
-    )
 
     public override fun onStart() {
         super.onStart()
@@ -133,12 +112,12 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
         requestGetRoom(roomObject.tag)
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         keyPairMap = RSAHelper.getKeyPairs()
-        binding.playerView.setControllerVisibilityListener(ControllerVisibilityListener { visibility ->
-            if (visibility == View.VISIBLE){
+        binding.playerView.setControllerVisibilityListener(PlayerView.ControllerVisibilityListener { visibility ->
+            if (visibility == View.VISIBLE) {
                 adjust(80f)
                 binding.toolbar.visibility = View.VISIBLE
             } else {
-                adjust(0f)
+                adjust(10f)
                 binding.toolbar.visibility = View.GONE
             }
         })
@@ -292,6 +271,13 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
         binding.recyclerMessage.layoutParams = layoutParams
     }
 
+    @SuppressLint("DefaultLocale")
+    private fun getFormattedCurrentPosition(currentPosition:Long):String{
+        val seconds = (currentPosition / 1000).toInt()
+        val minutes = (seconds / 60)
+        val secondsRemainder = (seconds % 60)
+        return String.format("%02d:%02d", minutes, secondsRemainder)
+    }
     private fun initializePlayer() {
         // ExoPlayer implements the Player interface
         player = ExoPlayer.Builder(this)
@@ -318,44 +304,75 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
             .apply {
                 addListener(object : Player.Listener {
                     override fun onIsPlayingChanged(isPlayingValue: Boolean) {
-                        SocketManager.userPaused(roomObject.tag, isPlayingValue)
+                        Log.d("test_player", "Current playback position: $${player!!.getCurrentPosition()} ms (formatted: $${getFormattedCurrentPosition(player!!.getCurrentPosition())})")
+                        Log.e("test_player", "onIsPlayingChanged: $isPlayingValue")
+                    }
 
-                        Log.e("PLYAER", "onIsPlayingChanged: $isPlayingValue")
+                    override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                        super.onPlayWhenReadyChanged(playWhenReady, reason)
+                        Log.e("test_player", "onPlayWhenReadyChanged: $playWhenReady $reason" )
+                        Log.d("test_player", "Current playback position: $${player!!.getCurrentPosition()} ms (formatted: $${getFormattedCurrentPosition(player!!.getCurrentPosition())})")
+                        SocketManager.sendPlayerState(roomObject.tag, if (playWhenReady) "resume" else "pause" , getFormattedCurrentPosition(player!!.getCurrentPosition()))
+
+                    }
+
+                    override fun onVolumeChanged(volume: Float) {
+                        super.onVolumeChanged(volume)
+                        Log.e("test_player", "onVolumeChanged: $volume" )
+                        Log.d("test_player", "Current playback position: $${player!!.getCurrentPosition()} ms (formatted: $${getFormattedCurrentPosition(player!!.getCurrentPosition())})")
+                    }
+
+                    override fun onEvents(player: Player, events: Player.Events) {
+                        super.onEvents(player, events)
+                        Log.e("test_player", "onEvents: $events" )
+                        Log.d("test_player", "Current playback position: $${player!!.getCurrentPosition()} ms (formatted: $${getFormattedCurrentPosition(player!!.getCurrentPosition())})")
                     }
 
                     override fun onTimelineChanged(timeline: Timeline, reason: Int) {
                         super.onTimelineChanged(timeline, reason)
-                        Log.e("PLYAER", "onTimelineChanged: $reason")
+                        Log.e("test_player", "onTimelineChanged: $reason")
+                        Log.d("test_player", "Current playback position: $${player!!.getCurrentPosition()} ms (formatted: $${getFormattedCurrentPosition(player!!.getCurrentPosition())})")
                     }
-
-
 
                     override fun onPositionDiscontinuity(
                         oldPosition: Player.PositionInfo,
                         newPosition: Player.PositionInfo,
                         reason: Int
                     ) {
-                        Log.e("PLYAER", "onPositionDiscontinuity: ${newPosition.positionMs}")
-
+                        Log.e("test_player", "onPositionDiscontinuity  $reason: ${newPosition.positionMs}")
                         super.onPositionDiscontinuity(oldPosition, newPosition, reason)
+                        val currentPosition = player?.currentPosition
+                        val duration = player?.duration
+                        if (currentPosition != null) {
+                            Log.e("test_player", "onPositionDiscontinuity: ${(currentPosition * 100 / duration!!).toInt()}" )
+                        }
                     }
 
                     override fun onPlaybackStateChanged(playbackState: Int) {
                         super.onPlaybackStateChanged(playbackState)
-                        Log.e("PLYAER", "onPlaybackStateChanged: $playbackState")
+                        val stateString = when (playbackState) {
+                            ExoPlayer.STATE_IDLE -> "idle"
+                            ExoPlayer.STATE_BUFFERING -> "buffering"
+                            ExoPlayer.STATE_READY -> "ready"
+                            ExoPlayer.STATE_ENDED -> "ended"
+                            else -> "unknown ($playbackState)"
+                        }
+                        Log.d("test_player", "Current playback position: $${player!!.getCurrentPosition()} ms (formatted: $${getFormattedCurrentPosition(player!!.getCurrentPosition())})")
+                        SocketManager.sendPlayerState(roomObject.tag, stateString , getFormattedCurrentPosition(player!!.getCurrentPosition()))
+                        previousState = playbackState
+                        Log.d("test_player", "onPlaybackStateChanged: $stateString")
+                        Log.e("test_player", "onPlaybackStateChanged: $playbackState")
                     }
-
 
                     override fun onIsLoadingChanged(isLoading: Boolean) {
                         super.onIsLoadingChanged(isLoading)
-                        Log.e("PLYAER", "onIsLoadingChanged: $isLoading")
+                        Log.e("test_player", "onIsLoadingChanged: $isLoading")
                     }
 
                     override fun onPlayerError(error: PlaybackException) {
                         super.onPlayerError(error)
-                        Log.e("PLYAER", "onPlayerError: ", error)
+                        Log.e("test_player", "onPlayerError: ", error)
                     }
-
 
                     override fun onTrackSelectionParametersChanged(parameters: TrackSelectionParameters) {
                         super.onTrackSelectionParametersChanged(parameters)

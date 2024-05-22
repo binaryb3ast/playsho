@@ -19,6 +19,7 @@ object SocketManager {
         const val NEW_LINK = "new_link"
         const val TRADE = "trade"
         const val PAUSE = "pause"
+        const val PLAYER_STATE = "player_state"
     }
 
     @Synchronized
@@ -116,16 +117,18 @@ object SocketManager {
         socket?.emit(EVENTS.SEND_MESSAGE, json)
     }
 
+
     @Synchronized
-    fun userPaused(room: String, isPaused: Boolean) {
+    fun sendPlayerState(room: String, state: String, data: String = "") {
         val json = JSONObject()
         try {
             json.put("room", room)
-            json.put("message",  if (!isPaused)  "pause" else "resume")
+            json.put("message", state)
+            if (data.isNotEmpty()) json.put("data", data)
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-        socket?.emit(EVENTS.PAUSE, json)
+        socket?.emit(EVENTS.PLAYER_STATE, json)
     }
 
     @Synchronized
@@ -136,9 +139,9 @@ object SocketManager {
             senderJson.put("tag", AccountInstance.getUserData("tag"))
             senderJson.put("public_key", AccountInstance.getAuthToken("public_key"))
             val receiverJson = JSONObject()
-            receiverJson.put("tag",tag)
+            receiverJson.put("tag", tag)
             json.put("sender", senderJson)
-            json.put("receiver" , receiverJson)
+            json.put("receiver", receiverJson)
         } catch (e: JSONException) {
             e.printStackTrace()
         }
