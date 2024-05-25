@@ -75,6 +75,7 @@
             <com.playsho.android.component.Icon
                 android:layout_width="56dp"
                 android:padding="15dp"
+                android:onClick="@{handler::onSettingPressed}"
                 android:layout_height="match_parent"
                 android:id="@+id/ic_setting"
                 android:layout_alignParentEnd="true"

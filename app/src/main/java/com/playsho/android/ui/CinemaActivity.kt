@@ -1,23 +1,24 @@
 package com.playsho.android.ui
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.annotation.OptIn
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MimeTypes
-import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
-import androidx.media3.common.Timeline
-import androidx.media3.common.TrackSelectionParameters
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.DefaultTimeBar
 import androidx.media3.ui.PlayerView
+import androidx.media3.ui.TimeBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.playsho.android.R
@@ -33,6 +34,7 @@ import com.playsho.android.network.Response
 import com.playsho.android.network.SocketManager
 import com.playsho.android.ui.bottomsheet.AddStreamLinkBottomSheet
 import com.playsho.android.ui.bottomsheet.SendMessageBottomSheet
+import com.playsho.android.ui.popup.CinemaSettingPopup
 import com.playsho.android.utils.Crypto
 import com.playsho.android.utils.DimensionUtils
 import com.playsho.android.utils.RSAHelper
@@ -81,6 +83,11 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
     public override fun onStop() {
         super.onStop()
         releasePlayer()
+    }
+
+    override fun onDestroy() {
+        roomObject.tag.let { SocketManager.leaveRoom(it) }
+        super.onDestroy()
     }
 
     private fun releasePlayer() {
@@ -178,6 +185,8 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
         }
     }
 
+
+
     private fun handleNewLink(data: Array<Any>) {
         val message = gson.fromJson(data[0].toString(), Message::class.java)
         roomObject.streamLink = message.payload
@@ -231,6 +240,11 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
 
     class ClickHandler(private val activity: CinemaActivity) {
 
+        fun onSettingPressed(view: View){
+            var popup = CinemaSettingPopup(activity)
+            popup.showAtLocation(view)
+        }
+
         fun onAddLinkPress(view: View){
             val bottomSheet = AddStreamLinkBottomSheet(activity.roomObject.tag)
             bottomSheet.setOnResult(callback = object : BaseBottomSheet.BottomSheetResultCallback {
@@ -280,6 +294,8 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
         val secondsRemainder = (seconds % 60)
         return String.format("%02d:%02d", minutes, secondsRemainder)
     }
+
+    @OptIn(UnstableApi::class)
     private fun initializePlayer() {
         // ExoPlayer implements the Player interface
         player = ExoPlayer.Builder(this)
@@ -304,49 +320,44 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
                 exoPlayer.prepare()
             }
             .apply {
-                addListener(object : Player.Listener {
-                    override fun onIsPlayingChanged(isPlayingValue: Boolean) {
-                        Log.d("test_player", "Current playback position: $${player!!.getCurrentPosition()} ms (formatted: $${getFormattedCurrentPosition(player!!.getCurrentPosition())})")
-                        Log.e("test_player", "onIsPlayingChanged: $isPlayingValue")
+                val seekBar:DefaultTimeBar = binding.playerView.findViewById(androidx.media3.ui.R.id.exo_progress) // Replace with your SeekBar ID
+                seekBar.setPlayedColor(Color.RED);
+
+                seekBar.setUnplayedColor(Color.GRAY);
+
+                seekBar.setBufferedColor(Color.BLUE);
+
+                seekBar.setScrubberColor(Color.GREEN);
+
+                seekBar.addListener(object : TimeBar.OnScrubListener {
+                    override fun onScrubStart(timeBar: TimeBar, position: Long) {
+                        // Called when the user starts scrubbing
+                        Log.e("TimeBar", "Scrub started at position: $position")
                     }
+
+                    override fun onScrubMove(timeBar: TimeBar, position: Long) {
+                        // Called when the user moves the scrubber
+                        Log.e("TimeBar", "Scrubbing to position: $position")
+                    }
+
+                    override fun onScrubStop(timeBar: TimeBar, position: Long, canceled: Boolean) {
+                        // Called when the user stops scrubbing
+                        Log.e("TimeBar", "Scrub stopped at position: $position")
+                        if (!canceled) {
+                            SocketManager.sendPlayerState(roomObject.tag, "scrub" ,
+                                position.toString()
+                            )
+                        }
+                    }
+                })
+
+                addListener(object : Player.Listener {
 
                     override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                         super.onPlayWhenReadyChanged(playWhenReady, reason)
                         Log.e("test_player", "onPlayWhenReadyChanged: $playWhenReady $reason" )
                         Log.d("test_player", "Current playback position: $${player!!.getCurrentPosition()} ms (formatted: $${getFormattedCurrentPosition(player!!.getCurrentPosition())})")
-                        SocketManager.sendPlayerState(roomObject.tag, if (playWhenReady) "resume" else "pause" , getFormattedCurrentPosition(player!!.getCurrentPosition()))
-                    }
-
-                    override fun onVolumeChanged(volume: Float) {
-                        super.onVolumeChanged(volume)
-                        Log.e("test_player", "onVolumeChanged: $volume" )
-                        Log.d("test_player", "Current playback position: $${player!!.getCurrentPosition()} ms (formatted: $${getFormattedCurrentPosition(player!!.getCurrentPosition())})")
-                    }
-
-                    override fun onEvents(player: Player, events: Player.Events) {
-                        super.onEvents(player, events)
-                        Log.e("test_player", "onEvents: $events" )
-                        Log.d("test_player", "Current playback position: $${player!!.getCurrentPosition()} ms (formatted: $${getFormattedCurrentPosition(player!!.getCurrentPosition())})")
-                    }
-
-                    override fun onTimelineChanged(timeline: Timeline, reason: Int) {
-                        super.onTimelineChanged(timeline, reason)
-                        Log.e("test_player", "onTimelineChanged: $reason")
-                        Log.d("test_player", "Current playback position: $${player!!.getCurrentPosition()} ms (formatted: $${getFormattedCurrentPosition(player!!.getCurrentPosition())})")
-                    }
-
-                    override fun onPositionDiscontinuity(
-                        oldPosition: Player.PositionInfo,
-                        newPosition: Player.PositionInfo,
-                        reason: Int
-                    ) {
-                        Log.e("test_player", "onPositionDiscontinuity  $reason: ${newPosition.positionMs}")
-                        super.onPositionDiscontinuity(oldPosition, newPosition, reason)
-                        val currentPosition = player?.currentPosition
-                        val duration = player?.duration
-                        if (currentPosition != null) {
-                            Log.e("test_player", "onPositionDiscontinuity: ${(currentPosition * 100 / duration!!).toInt()}" )
-                        }
+                        SocketManager.sendPlayerState(roomObject.tag, if (playWhenReady) "resume" else "pause" , player?.currentPosition.toString())
                     }
 
                     override fun onPlaybackStateChanged(playbackState: Int) {
@@ -359,30 +370,10 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
                             else -> "unknown ($playbackState)"
                         }
                         Log.d("test_player", "Current playback position: $${player!!.getCurrentPosition()} ms (formatted: $${getFormattedCurrentPosition(player!!.getCurrentPosition())})")
-                        SocketManager.sendPlayerState(roomObject.tag, stateString , getFormattedCurrentPosition(player!!.getCurrentPosition()))
+                        SocketManager.sendPlayerState(roomObject.tag, stateString , player?.currentPosition.toString())
                         previousState = playbackState
                         Log.d("test_player", "onPlaybackStateChanged: $stateString")
                         Log.e("test_player", "onPlaybackStateChanged: $playbackState")
-                    }
-
-                    override fun onIsLoadingChanged(isLoading: Boolean) {
-                        super.onIsLoadingChanged(isLoading)
-                        Log.e("test_player", "onIsLoadingChanged: $isLoading")
-                    }
-
-                    override fun onPlayerError(error: PlaybackException) {
-                        super.onPlayerError(error)
-                        Log.e("test_player", "onPlayerError: ", error)
-                    }
-
-                    override fun onTrackSelectionParametersChanged(parameters: TrackSelectionParameters) {
-                        super.onTrackSelectionParametersChanged(parameters)
-
-                        val currentProgressTime = player?.currentPosition
-                        Log.e("PLYAER", "Current progress time: $currentProgressTime milliseconds")
-                        // You can now use the current progress time as needed
-
-
                     }
 
                 })
