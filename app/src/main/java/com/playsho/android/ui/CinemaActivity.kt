@@ -121,7 +121,9 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
                 binding.toolbar.visibility = View.GONE
             }
         })
-        initializePlayer()
+        if (player == null && !roomObject.streamLink.isNullOrEmpty()) {
+            initializePlayer()
+        }
         configRecycler()
     }
 
@@ -313,7 +315,6 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
                         Log.e("test_player", "onPlayWhenReadyChanged: $playWhenReady $reason" )
                         Log.d("test_player", "Current playback position: $${player!!.getCurrentPosition()} ms (formatted: $${getFormattedCurrentPosition(player!!.getCurrentPosition())})")
                         SocketManager.sendPlayerState(roomObject.tag, if (playWhenReady) "resume" else "pause" , getFormattedCurrentPosition(player!!.getCurrentPosition()))
-
                     }
 
                     override fun onVolumeChanged(volume: Float) {
