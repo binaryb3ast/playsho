@@ -84,6 +84,14 @@
                 android:src="@drawable/ic_action_setting"
                 app:color="@color/icon_white" />
 
+            <com.playsho.android.component.Sheet
+                android:id="@+id/txt_room_title"
+                style="@style/font_subtitle_strong"
+                android:textColor="@color/white"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
             <com.playsho.android.component.Icon
                 android:layout_width="56dp"
                 android:padding="15dp"

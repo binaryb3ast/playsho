@@ -57,7 +57,7 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
     val gson = Gson()
     private var members = mutableMapOf<String, Device>()
     private lateinit var messageAdapter: MessageAdapter
-    var previousState = ExoPlayer.STATE_IDLE
+    private var syncWith: String = "d7c1e46b-aea5-4649-bc4c-cddbb58806ab"
 
     override fun getLayoutResourceId(): Int {
         return R.layout.activity_cinema
@@ -116,8 +116,12 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
         roomObject = Room(
             tag = getIntentStringExtra("tag") ?: "crash_room"
         )
+        binding.txtRoomTitle.text = roomObject.tag
         requestGetRoom(roomObject.tag)
-        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        );
         keyPairMap = RSAHelper.getKeyPairs()
         binding.playerView.setControllerVisibilityListener(PlayerView.ControllerVisibilityListener { visibility ->
             if (visibility == View.VISIBLE) {
@@ -176,16 +180,36 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
             roomObject.roomKey?.let {
                 message.message = Crypto.decryptAES(message.message, it)
             }
+
         } else {
             message.sender.color = members[message.sender.tag]?.color
+            if (syncWith.isNotEmpty() && syncWith == message.sender.tag){
+                runOnUiThread {
+                    when (message.action) {
+                        "pause" -> {
+                            player?.stop()
+                        }
+
+                        "buffering" -> {
+                            player?.stop()
+                        }
+
+                        "resume" -> {
+                            player?.release()
+                        }
+
+                        "scrub" -> {
+                            player?.seekTo(message.data.toLong())
+                        }
+                    }
+                }
+            }
         }
         runOnUiThread {
             messageAdapter.addMessage(message) // Assuming `adapter` is your MessageAdapter instance
             binding.recyclerMessage.smoothScrollToPosition(0)
         }
     }
-
-
 
     private fun handleNewLink(data: Array<Any>) {
         val message = gson.fromJson(data[0].toString(), Message::class.java)
@@ -240,12 +264,12 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
 
     class ClickHandler(private val activity: CinemaActivity) {
 
-        fun onSettingPressed(view: View){
+        fun onSettingPressed(view: View) {
             var popup = CinemaSettingPopup(activity)
             popup.showAtLocation(view)
         }
 
-        fun onAddLinkPress(view: View){
+        fun onAddLinkPress(view: View) {
             val bottomSheet = AddStreamLinkBottomSheet(activity.roomObject.tag)
             bottomSheet.setOnResult(callback = object : BaseBottomSheet.BottomSheetResultCallback {
                 override fun onBottomSheetProcessSuccess(data: String) {
@@ -256,10 +280,10 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
 
                 }
             })
-            bottomSheet.show(activity.supportFragmentManager , "link")
+            bottomSheet.show(activity.supportFragmentManager, "link")
         }
 
-        fun onMessageIconPressed(view: View){
+        fun onMessageIconPressed(view: View) {
             val bottomSheet = SendMessageBottomSheet()
             bottomSheet.setOnResult(callback = object : BaseBottomSheet.BottomSheetResultCallback {
                 override fun onBottomSheetProcessSuccess(data: String) {
@@ -273,7 +297,7 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
 
                 }
             })
-            bottomSheet.show(activity.supportFragmentManager , "messsage")
+            bottomSheet.show(activity.supportFragmentManager, "messsage")
         }
     }
 
@@ -281,14 +305,14 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
         SocketManager.sendMessage(roomObject.tag, msg)
     }
 
-    private fun adjust(value: Float){
+    private fun adjust(value: Float) {
         val layoutParams = binding.recyclerMessage.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.bottomMargin = DimensionUtils.dpToPx(value)
         binding.recyclerMessage.layoutParams = layoutParams
     }
 
     @SuppressLint("DefaultLocale")
-    private fun getFormattedCurrentPosition(currentPosition:Long):String{
+    private fun getFormattedCurrentPosition(currentPosition: Long): String {
         val seconds = (currentPosition / 1000).toInt()
         val minutes = (seconds / 60)
         val secondsRemainder = (seconds % 60)
@@ -320,7 +344,8 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
                 exoPlayer.prepare()
             }
             .apply {
-                val seekBar:DefaultTimeBar = binding.playerView.findViewById(androidx.media3.ui.R.id.exo_progress) // Replace with your SeekBar ID
+                val seekBar: DefaultTimeBar =
+                    binding.playerView.findViewById(androidx.media3.ui.R.id.exo_progress) // Replace with your SeekBar ID
                 seekBar.setPlayedColor(Color.RED);
 
                 seekBar.setUnplayedColor(Color.GRAY);
@@ -344,7 +369,8 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
                         // Called when the user stops scrubbing
                         Log.e("TimeBar", "Scrub stopped at position: $position")
                         if (!canceled) {
-                            SocketManager.sendPlayerState(roomObject.tag, "scrub" ,
+                            SocketManager.sendPlayerState(
+                                roomObject.tag, "scrub",
                                 position.toString()
                             )
                         }
@@ -355,9 +381,18 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
 
                     override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                         super.onPlayWhenReadyChanged(playWhenReady, reason)
-                        Log.e("test_player", "onPlayWhenReadyChanged: $playWhenReady $reason" )
-                        Log.d("test_player", "Current playback position: $${player!!.getCurrentPosition()} ms (formatted: $${getFormattedCurrentPosition(player!!.getCurrentPosition())})")
-                        SocketManager.sendPlayerState(roomObject.tag, if (playWhenReady) "resume" else "pause" , player?.currentPosition.toString())
+                        Log.e("test_player", "onPlayWhenReadyChanged: $playWhenReady $reason")
+                        Log.d(
+                            "test_player",
+                            "Current playback position: $${player!!.getCurrentPosition()} ms (formatted: $${
+                                getFormattedCurrentPosition(player!!.getCurrentPosition())
+                            })"
+                        )
+                        SocketManager.sendPlayerState(
+                            roomObject.tag,
+                            if (playWhenReady) "resume" else "pause",
+                            player?.currentPosition.toString()
+                        )
                     }
 
                     override fun onPlaybackStateChanged(playbackState: Int) {
@@ -369,9 +404,17 @@ class CinemaActivity : BaseActivity<ActivityCinemaBinding>() {
                             ExoPlayer.STATE_ENDED -> "ended"
                             else -> "unknown ($playbackState)"
                         }
-                        Log.d("test_player", "Current playback position: $${player!!.getCurrentPosition()} ms (formatted: $${getFormattedCurrentPosition(player!!.getCurrentPosition())})")
-                        SocketManager.sendPlayerState(roomObject.tag, stateString , player?.currentPosition.toString())
-                        previousState = playbackState
+                        Log.d(
+                            "test_player",
+                            "Current playback position: $${player!!.getCurrentPosition()} ms (formatted: $${
+                                getFormattedCurrentPosition(player!!.getCurrentPosition())
+                            })"
+                        )
+                        SocketManager.sendPlayerState(
+                            roomObject.tag,
+                            stateString,
+                            player?.currentPosition.toString()
+                        )
                         Log.d("test_player", "onPlaybackStateChanged: $stateString")
                         Log.e("test_player", "onPlaybackStateChanged: $playbackState")
                     }

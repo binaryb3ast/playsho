@@ -18,9 +18,9 @@ object RetrofitClient {
     private const val REQUEST_READ_TIME_OUT = 15L
     private const val REQUEST_CONNECT_TIME_OUT = 15L
 //    private const val BASE_URL_TEST = "http://192.168.100.110:3000/"
-    private const val BASE_URL_TEST = "https://6c6a-169-150-218-27.ngrok-free.app"
+    private const val BASE_URL_TEST = "https://5d44-185-107-80-116.ngrok-free.app"
 //    private const val SOCKET_URL_TEST = "http://192.168.100.110:7777"
-    private const val SOCKET_URL_TEST = "https://5d1a-169-150-218-27.ngrok-free.app"
+    private const val SOCKET_URL_TEST = "https://f3e7-185-107-80-116.ngrok-free.app"
     private const val BASE_URL = "https://d.digilog.pro/"
 
     private val CONNECTION_SPECS = listOf(
