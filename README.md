@@ -15,7 +15,7 @@ Turn off those movie nights into immersive cinematic experiences with PlaySho! �
 </p> 
 
 ## 📱 Server Side
-For the Server Side of PlaySho, please visit the [PlaySho Nestjs repository](https://github.com/behnamnasehi/playsho-nest).
+For the Server Side of PlaySho, please visit the [PlaySho Nestjs repository](https://github.com/binaryb3ast/playsho-nest).
 
 ## 🚀 Key Features:
 
